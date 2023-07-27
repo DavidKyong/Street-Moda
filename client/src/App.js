@@ -1,31 +1,37 @@
-import { useEffect, useState } from 'react';
-import logo from './logo.svg';
-import './App.css';
+// import { useEffect, useState } from 'react';
+import Header from './components/header';
+import Category from './pages/Category';
 
-function App() {
-  const [serverData, setServerData] = useState('');
+export default function App() {
+  // const [serverData, setServerData] = useState('');
 
-  useEffect(() => {
-    async function readServerData() {
-      const resp = await fetch('/api/hello');
-      const data = await resp.json();
+  // useEffect(() => {
+  //   async function readServerData() {
+  //     const resp = await fetch('/api/hello');
+  //     const data = await resp.json();
 
-      console.log('Data from server:', data);
+  //     console.log('Data from server:', data);
 
-      setServerData(data.message);
-    }
+  //     setServerData(data.message);
+  //   }
 
-    readServerData();
-  }, []);
+  //   readServerData();
+  // }, []);
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <h1>{serverData}</h1>
-      </header>
-    </div>
+    <>
+      <div>
+        <Header />
+        <Category />
+        {/* <div className="container mx-auto bg-gray-200 rounded-xl shadow border p-8 m-10">
+      <p className="text-3xl text-gray-700 font-bold mb-5">
+        Welcome!
+      </p>
+      <p className="text-gray-500 text-lg">
+        React and Tailwind CSS in action
+      </p>
+    </div> */}
+      </div>
+    </>
   );
 }
-
-export default App;
