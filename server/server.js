@@ -88,7 +88,7 @@ app.get('/api/listings', async (req, res, next) => {
   }
 });
 
-app.post('/api/listings', authorizationMiddleware, async (req, res, next) => {
+app.post('/api/listings', async (req, res, next) => {
   try {
     const {
       category,
@@ -116,11 +116,12 @@ app.post('/api/listings', authorizationMiddleware, async (req, res, next) => {
       throw new ClientError(400, 'input fields are required');
     }
     const sql = `
-      insert into "listings" ("category", "brand", "name", "description", "price", "size", "condition", "images", "email", "phoneNumber")
-      values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+      insert into "listings" ("userId", "category", "brand", "name", "description", "price", "size", "condition", "images", "email", "phoneNumber")
+      values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
       returning *;
     `;
     const params = [
+      req.user.userId,
       category,
       brand,
       name,
@@ -198,6 +199,7 @@ app.put(
         images,
         email,
         phoneNumber,
+        listingId,
       ];
       const result = await db.query(sql, params);
       const [entry] = result.rows;
