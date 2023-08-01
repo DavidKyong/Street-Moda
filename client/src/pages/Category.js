@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Listing from './Listing';
+import Header from '../components/header';
 
 export default function Category() {
   const [category, setCategory] = useState('');
@@ -26,6 +27,7 @@ export default function Category() {
 
   return (
     <>
+      <Header />
       <div className="flex flex-col h-screen">
         {isCategorySelected && (
           <div className="flex justify-left mt-3 ml-3">
