@@ -10,6 +10,30 @@ export async function readListing() {
   return await res.json();
 }
 
+export async function readShoeListing() {
+  const req = {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+    },
+  };
+  const res = await fetch('/api/listings/shoes', req);
+  if (!res.ok) throw new Error(`fetch Error ${res.status}`);
+  return await res.json();
+}
+
+export async function readApparelListing() {
+  const req = {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+    },
+  };
+  const res = await fetch('/api/listings/apparels', req);
+  if (!res.ok) throw new Error(`fetch Error ${res.status}`);
+  return await res.json();
+}
+
 export async function addListing(entry) {
   const req = {
     method: 'POST',

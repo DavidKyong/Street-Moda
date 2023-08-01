@@ -88,6 +88,32 @@ app.get('/api/listings', async (req, res, next) => {
   }
 });
 
+app.get('/api/listings/apparels', async (req, res, next) => {
+  try {
+    const sql = `
+      select * from "listings"
+      where "category" = 'apparels'
+    `;
+    const result = await db.query(sql);
+    res.status(201).json(result.rows);
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.get('/api/listings/shoes', async (req, res, next) => {
+  try {
+    const sql = `
+      select * from "listings"
+      where "category" = 'shoes'
+    `;
+    const result = await db.query(sql);
+    res.status(201).json(result.rows);
+  } catch (error) {
+    next(error);
+  }
+});
+
 app.post('/api/listings', async (req, res, next) => {
   try {
     const {
@@ -116,12 +142,12 @@ app.post('/api/listings', async (req, res, next) => {
       throw new ClientError(400, 'input fields are required');
     }
     const sql = `
-      insert into "listings" ("userId", "category", "brand", "name", "description", "price", "size", "condition", "images", "email", "phoneNumber")
-      values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+      insert into "listings" ("category", "brand", "name", "description", "price", "size", "condition", "images", "email", "phoneNumber")
+      values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
       returning *;
     `;
     const params = [
-      req.user.userId,
+      req.userId,
       category,
       brand,
       name,
@@ -140,6 +166,8 @@ app.post('/api/listings', async (req, res, next) => {
     next(error);
   }
 });
+
+// http -v post localhost:8080/api/listings category=apparels brand=supreme name=boxlogo description='red box logo' price:=200 size=M condition=new images=none email=none phoneNumber=idk
 
 app.put(
   'api/listings/:listingId',
