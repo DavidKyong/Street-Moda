@@ -1,5 +1,4 @@
 import React from 'react';
-import Header from './components/header';
 import Category from './pages/Category';
 import Listing from './pages/Listing';
 import SignIn from './pages/SignIn';

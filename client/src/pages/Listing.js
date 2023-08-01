@@ -1,19 +1,26 @@
 import React from 'react';
 import { useEffect, useState } from 'react';
-import { readShoeListing } from '../data';
+import { readShoeListing, readApparelListing } from '../data';
 import { Link } from 'react-router-dom';
 
 export default function Listing({ categoryTitle }) {
-  const [shoeListing, setShoeListing] = useState([]);
+  const [list, setList] = useState([]);
   const [error, setError] = useState();
   const [isLoading, setIsLoading] = useState();
+  console.log(categoryTitle);
 
   useEffect(() => {
     async function load() {
       setIsLoading(true);
       try {
-        const listingData = await readShoeListing();
-        setShoeListing(listingData);
+        if (categoryTitle === 'SHOES') {
+          const shoeData = await readShoeListing();
+          setList(shoeData);
+        }
+        if (categoryTitle === 'APPARELS') {
+          const apparelData = await readApparelListing();
+          setList(apparelData);
+        }
       } catch (error) {
         setError(error);
       } finally {
@@ -21,18 +28,18 @@ export default function Listing({ categoryTitle }) {
       }
     }
     if (isLoading === undefined) load();
-  }, [isLoading]);
+  }, [isLoading, categoryTitle]);
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error loading list: {error.message}</div>;
-  if (!shoeListing) return null;
+  if (!list) return null;
 
   return (
     <>
       <div className="listing-page mt-7">
         <h2 className="ml-10 text-3xl">{categoryTitle}</h2>
         <ul>
-          {shoeListing.map((list) => (
+          {list.map((list) => (
             <ListItem key={list.listingId} listing={list} />
           ))}
         </ul>
