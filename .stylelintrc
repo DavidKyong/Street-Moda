@@ -8,17 +8,17 @@
     "no-empty-source": null,
     "selector-class-pattern": null,
     "at-rule-no-unknown": [
-      true,
-      {
-        "ignoreAtRules": [
-          "extends",
-          "apply",
-          "tailwind",
-          "components",
-          "utilities",
-          "screen"
-        ]
-      }
+  true,
+  {
+    "ignoreAtRules": [
+      "extends",
+      "apply",
+      "tailwind",
+      "components",
+      "utilities",
+      "screen"
     ]
+  }
+]
   }
 }
