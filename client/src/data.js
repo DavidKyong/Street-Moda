@@ -34,6 +34,18 @@ export async function readApparelListing() {
   return await res.json();
 }
 
+export async function readShoesListId(listingId) {
+  const req = {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+    },
+  };
+  const res = await fetch(`/api/listings/shoes/${listingId}`, req);
+  if (!res.ok) throw new Error(`fetch Error ${res.status}`);
+  return await res.json();
+}
+
 export async function addListing(entry) {
   const req = {
     method: 'POST',

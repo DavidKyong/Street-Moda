@@ -1,5 +1,3 @@
-import { Link } from 'react-router-dom';
-
 export default function SignUp() {
   return (
     <div className="sign-in-container border-solid border-2 border-black">
@@ -24,7 +22,7 @@ export default function SignUp() {
               <input
                 required
                 name="password"
-                type="password"
+                type="text"
                 className="border-solid border-2 rounded-full pl-3"></input>
             </label>
           </div>

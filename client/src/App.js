@@ -3,6 +3,7 @@ import Category from './pages/Category';
 import Listing from './pages/Listing';
 import SignIn from './pages/SignIn';
 import SignUp from './pages/SignUp';
+import ProductDetails from './pages/ProductDetails';
 import { Routes, Route } from 'react-router-dom';
 
 export default function App() {
@@ -12,6 +13,7 @@ export default function App() {
       <Route path="shoes" element={<Listing />} />
       <Route path="sign-in" element={<SignIn />} />
       <Route path="sign-up" element={<SignUp />} />
+      <Route path="shoes/:listingId" element={<ProductDetails />} />
     </Routes>
   );
 }

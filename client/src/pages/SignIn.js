@@ -1,5 +1,3 @@
-import { Link } from 'react-router-dom';
-
 export default function SignIn() {
   return (
     <div className="register-container border-solid border-2 border-black w-3/4">

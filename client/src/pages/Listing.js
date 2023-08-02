@@ -7,7 +7,6 @@ export default function Listing({ categoryTitle }) {
   const [list, setList] = useState([]);
   const [error, setError] = useState();
   const [isLoading, setIsLoading] = useState();
-  console.log(categoryTitle);
 
   useEffect(() => {
     async function load() {
@@ -49,9 +48,9 @@ export default function Listing({ categoryTitle }) {
 }
 
 function ListItem({ listing }) {
-  const { listId, name, price, size, images } = listing;
+  const { listingId, name, price, size, images } = listing;
   return (
-    <Link to={`apparels/${listId}`}>
+    <Link to={`/shoes/${listingId}`}>
       <li>
         <div className="flex justify ml-10 mt-5">
           <div className="basis-1/4">
