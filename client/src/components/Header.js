@@ -6,7 +6,9 @@ export default function Header() {
       <div className="header mt-2">
         <div className="w-full">
           <div className="flex items-baseline">
-            <h1 className="text-5xl basis-11/12 ml-5">Street Moda</h1>
+            <div className="text-5xl basis-11/12 ml-5">
+              <Link to="/">Street Moda</Link>
+            </div>
             <div className="basis-1/3 ml-10">
               <Link to="sell" className="">
                 SELL

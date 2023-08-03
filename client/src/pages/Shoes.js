@@ -2,7 +2,6 @@ import React from 'react';
 import { useEffect, useState } from 'react';
 import { readShoeListing } from '../data';
 import { Link } from 'react-router-dom';
-import Header from '../components/Header';
 
 export default function Shoes() {
   const [shoes, setShoes] = useState([]);
@@ -30,7 +29,6 @@ export default function Shoes() {
 
   return (
     <>
-      <Header />
       <div className="listing-page mt-7">
         <h2 className="ml-10 text-3xl">SHOES</h2>
         <ul>

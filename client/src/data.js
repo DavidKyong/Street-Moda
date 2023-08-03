@@ -1,3 +1,16 @@
+export async function SigningUp(userData) {
+  const req = {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(userData),
+  };
+  const res = await fetch('/api/auth/sign-up', req);
+  if (!res.ok) {
+    throw new Error(`fetch Error ${res.status}`);
+  }
+  return await res.json();
+}
+
 export async function readListing() {
   const req = {
     method: 'GET',

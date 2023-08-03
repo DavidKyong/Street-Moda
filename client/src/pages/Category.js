@@ -1,10 +1,8 @@
 import { Link } from 'react-router-dom';
-import Header from '../components/Header';
 
 export default function Category() {
   return (
     <>
-      <Header />
       <div>
         <div className="relative mt-5">
           <img

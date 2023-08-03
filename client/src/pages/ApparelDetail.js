@@ -1,4 +1,3 @@
-import Header from '../components/Header';
 import { useState, useEffect } from 'react';
 import { readApparelsListId } from '../data';
 import { useParams } from 'react-router-dom';
@@ -38,7 +37,6 @@ export default function ApparelDetail() {
 
   return (
     <>
-      <Header />
       <div className="flex mt-8">
         <div className="w-1/2 flex justify-center">
           <img alt="placeholder"></img>
