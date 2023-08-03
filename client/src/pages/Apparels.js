@@ -1,10 +1,11 @@
 import React from 'react';
 import { useEffect, useState } from 'react';
-import { readShoeListing, readApparelListing } from '../data';
+import { readApparelListing } from '../data';
 import { Link } from 'react-router-dom';
+import Header from '../components/header';
 
-export default function Listing({ categoryTitle }) {
-  const [list, setList] = useState([]);
+export default function Apparels() {
+  const [apparels, setApparels] = useState([]);
   const [error, setError] = useState();
   const [isLoading, setIsLoading] = useState();
 
@@ -12,14 +13,8 @@ export default function Listing({ categoryTitle }) {
     async function load() {
       setIsLoading(true);
       try {
-        if (categoryTitle === 'SHOES') {
-          const shoeData = await readShoeListing();
-          setList(shoeData);
-        }
-        if (categoryTitle === 'APPARELS') {
-          const apparelData = await readApparelListing();
-          setList(apparelData);
-        }
+        const shoeData = await readApparelListing();
+        setApparels(shoeData);
       } catch (error) {
         setError(error);
       } finally {
@@ -27,20 +22,25 @@ export default function Listing({ categoryTitle }) {
       }
     }
     if (isLoading === undefined) load();
-  }, [isLoading, categoryTitle]);
+  }, [isLoading]);
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error loading list: {error.message}</div>;
-  if (!list) return null;
+  if (!apparels) return null;
 
   return (
     <>
+      <Header />
       <div className="listing-page mt-7">
-        <h2 className="ml-10 text-3xl">{categoryTitle}</h2>
+        <h2 className="ml-10 text-3xl">Apparels</h2>
         <ul>
-          {list.map((list) => (
-            <ListItem key={list.listingId} listing={list} />
-          ))}
+          {apparels.length > 0 ? (
+            apparels.map((apparel) => (
+              <ListItem key={apparel.listingId} listing={apparel} />
+            ))
+          ) : (
+            <li>No products</li>
+          )}
         </ul>
       </div>
     </>

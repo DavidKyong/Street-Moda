@@ -17,7 +17,7 @@ export async function readShoeListing() {
       Authorization: `Bearer ${sessionStorage.getItem('token')}`,
     },
   };
-  const res = await fetch('/api/listings/shoes', req);
+  const res = await fetch('/api/shoes', req);
   if (!res.ok) throw new Error(`fetch Error ${res.status}`);
   return await res.json();
 }
@@ -29,7 +29,7 @@ export async function readApparelListing() {
       Authorization: `Bearer ${sessionStorage.getItem('token')}`,
     },
   };
-  const res = await fetch('/api/listings/apparels', req);
+  const res = await fetch('/api/apparels', req);
   if (!res.ok) throw new Error(`fetch Error ${res.status}`);
   return await res.json();
 }
@@ -41,7 +41,7 @@ export async function readShoesListId(listingId) {
       Authorization: `Bearer ${sessionStorage.getItem('token')}`,
     },
   };
-  const res = await fetch(`/api/listings/shoes/${listingId}`, req);
+  const res = await fetch(`/api/shoes/${listingId}`, req);
   if (!res.ok) throw new Error(`fetch Error ${res.status}`);
   return await res.json();
 }

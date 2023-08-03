@@ -88,7 +88,7 @@ app.get('/api/listings', async (req, res, next) => {
   }
 });
 
-app.get('/api/listings/apparels', async (req, res, next) => {
+app.get('/api/apparels', async (req, res, next) => {
   try {
     const sql = `
       select * from "listings"
@@ -101,7 +101,7 @@ app.get('/api/listings/apparels', async (req, res, next) => {
   }
 });
 
-app.get('/api/listings/shoes', async (req, res, next) => {
+app.get('/api/shoes', async (req, res, next) => {
   try {
     const sql = `
       select * from "listings"
@@ -114,7 +114,7 @@ app.get('/api/listings/shoes', async (req, res, next) => {
   }
 });
 
-app.get('/api/listings/shoes/:listingId', async (req, res, next) => {
+app.get('/api/shoes/:listingId', async (req, res, next) => {
   try {
     const listId = Number(req.params.listingId);
     if (!listId) {
