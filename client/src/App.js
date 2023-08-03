@@ -1,31 +1,21 @@
-import { useEffect, useState } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import Category from './pages/Category';
+import Shoes from './pages/Shoes';
+import Apparels from './pages/Apparels';
+import SignIn from './pages/SignIn';
+import SignUp from './pages/SignUp';
+import ProductDetails from './pages/ProductDetails';
+import { Routes, Route } from 'react-router-dom';
 
-function App() {
-  const [serverData, setServerData] = useState('');
-
-  useEffect(() => {
-    async function readServerData() {
-      const resp = await fetch('/api/hello');
-      const data = await resp.json();
-
-      console.log('Data from server:', data);
-
-      setServerData(data.message);
-    }
-
-    readServerData();
-  }, []);
-
+export default function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <h1>{serverData}</h1>
-      </header>
-    </div>
+    <Routes>
+      <Route index path="/" element={<Category />} />s
+      <Route path="shoes" element={<Shoes />} />
+      <Route path="apparels" element={<Apparels />} />
+      <Route path="sign-in" element={<SignIn />} />
+      <Route path="sign-up" element={<SignUp />} />
+      <Route path="shoes/:listingId" element={<ProductDetails />} />
+    </Routes>
   );
 }
-
-export default App;
