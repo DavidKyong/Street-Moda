@@ -2,7 +2,7 @@ import React from 'react';
 import { useEffect, useState } from 'react';
 import { readApparelListing } from '../data';
 import { Link } from 'react-router-dom';
-import Header from '../components/header';
+import Header from '../components/Header';
 
 export default function Apparels() {
   const [apparels, setApparels] = useState([]);

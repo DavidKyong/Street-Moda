@@ -1,11 +1,10 @@
-import Header from '../components/header';
+import Header from '../components/Header';
 import { useState, useEffect } from 'react';
 import { readShoesListId } from '../data';
 import { useParams } from 'react-router-dom';
 
-export default function ProductDetails() {
+export default function ShoeDetail() {
   const { listingId } = useParams();
-  console.log(listingId);
   const [product, setProduct] = useState();
   const [error, setError] = useState();
   const [isLoading, setIsLoading] = useState(true);
@@ -40,22 +39,29 @@ export default function ProductDetails() {
   return (
     <>
       <Header />
-      <div className="row">
-        <div className="column-half">
+      <div className="flex mt-8">
+        <div className="w-1/2 flex justify-center">
           <img alt="placeholder"></img>
+          {/* Carousel/click image stretch feature */}
         </div>
-        <div className="column-half">
+        <div className="w-1/2 flex justify-center ">
           <ul>
             <li>{name}</li>
-            <li>{category}</li>
-            <li>{brand}</li>
-            <li>{size}</li>
-            <li>{condition}</li>
-            <li>{price}</li>
-            <li>{description}</li>
-            <li>{email}</li>
+            <li className="mt-4">{category}</li>
+            <li className="mt-4">{brand}</li>
+            <li className="mt-4">{size}</li>
+            <li className="mt-4">{condition}</li>
+            <li className="mt-4">{price}</li>
+            <li className="mt-4">{email}</li>
           </ul>
         </div>
+      </div>
+      <div className="mt-10 ml-10 mr-10">
+        <h1 className="">Description</h1>
+        <p className="mt-5 border-solid border-black border-2">
+          Extra Description about the item that sellers should know about.
+          {description}
+        </p>
       </div>
     </>
   );
