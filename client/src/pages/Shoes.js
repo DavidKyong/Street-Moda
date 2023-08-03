@@ -2,7 +2,7 @@ import React from 'react';
 import { useEffect, useState } from 'react';
 import { readShoeListing } from '../data';
 import { Link } from 'react-router-dom';
-import Header from '../components/header';
+import Header from '../components/Header';
 
 export default function Shoes() {
   const [shoes, setShoes] = useState([]);
@@ -52,7 +52,7 @@ function ListItem({ listing }) {
   return (
     <Link to={`/shoes/${listingId}`}>
       <li>
-        <div className="flex justify ml-10 mt-5">
+        <div className="flex justify ml-10 mt-5 ">
           <div className="basis-1/4">
             <img
               src={`/images/${images}`}

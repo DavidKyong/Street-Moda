@@ -2,7 +2,7 @@ export async function readListing() {
   const req = {
     method: 'GET',
     headers: {
-      Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+      Authorization: `Bearer ${localStorage.getItem('token')}`,
     },
   };
   const res = await fetch('/api/listings', req);
@@ -14,7 +14,7 @@ export async function readShoeListing() {
   const req = {
     method: 'GET',
     headers: {
-      Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+      Authorization: `Bearer ${localStorage.getItem('token')}`,
     },
   };
   const res = await fetch('/api/shoes', req);
@@ -26,7 +26,7 @@ export async function readApparelListing() {
   const req = {
     method: 'GET',
     headers: {
-      Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+      Authorization: `Bearer ${localStorage.getItem('token')}`,
     },
   };
   const res = await fetch('/api/apparels', req);
@@ -38,10 +38,22 @@ export async function readShoesListId(listingId) {
   const req = {
     method: 'GET',
     headers: {
-      Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+      Authorization: `Bearer ${localStorage.getItem('token')}`,
     },
   };
   const res = await fetch(`/api/shoes/${listingId}`, req);
+  if (!res.ok) throw new Error(`fetch Error ${res.status}`);
+  return await res.json();
+}
+
+export async function readApparelsListId(listingId) {
+  const req = {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('token')}`,
+    },
+  };
+  const res = await fetch(`/api/apparels/${listingId}`, req);
   if (!res.ok) throw new Error(`fetch Error ${res.status}`);
   return await res.json();
 }
@@ -51,7 +63,7 @@ export async function addListing(entry) {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+      Authorization: `Bearer ${localStorage.getItem('token')}`,
     },
     body: JSON.stringify(entry),
   };
@@ -65,7 +77,7 @@ export async function updateListing(entry) {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+      Authorization: `Bearer ${localStorage.getItem('token')}`,
     },
     body: JSON.stringify(entry),
   };
@@ -78,7 +90,7 @@ export async function removeListing(entryId) {
   const req = {
     method: 'DELETE',
     headers: {
-      Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+      Authorization: `Bearer ${localStorage.getItem('token')}`,
     },
   };
   const res = await fetch(`/api/entries/${entryId}`, req);

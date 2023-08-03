@@ -4,7 +4,8 @@ import Shoes from './pages/Shoes';
 import Apparels from './pages/Apparels';
 import SignIn from './pages/SignIn';
 import SignUp from './pages/SignUp';
-import ProductDetails from './pages/ProductDetails';
+import ShoeDetail from './pages/ShoeDetail';
+import ApparelDetail from './pages/ApparelDetail';
 import { Routes, Route } from 'react-router-dom';
 
 export default function App() {
@@ -15,7 +16,8 @@ export default function App() {
       <Route path="apparels" element={<Apparels />} />
       <Route path="sign-in" element={<SignIn />} />
       <Route path="sign-up" element={<SignUp />} />
-      <Route path="shoes/:listingId" element={<ProductDetails />} />
+      <Route path="shoes/:listingId" element={<ShoeDetail />} />
+      <Route path="apparels/:listingId" element={<ApparelDetail />} />
     </Routes>
   );
 }

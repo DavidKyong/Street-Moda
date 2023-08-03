@@ -141,6 +141,33 @@ app.get('/api/shoes/:listingId', async (req, res, next) => {
   }
 });
 
+app.get('/api/apparels/:listingId', async (req, res, next) => {
+  try {
+    const listId = Number(req.params.listingId);
+    if (!listId) {
+      throw new ClientError(400, 'listId must be a positive integer');
+    }
+
+    const sql = `
+      select "listingId",
+             "category", "brand", "name", "description", "price", "size", "condition", "images", "email", "phoneNumber"
+             from "listings"
+      where "listingId" = $1 and "category" = 'apparels'
+    `;
+    const params = [listId];
+    const result = await db.query(sql, params);
+    if (!result.rows[0]) {
+      throw new ClientError(
+        404,
+        `cannot find product with listingId ${listId}`
+      );
+    }
+    res.status(201).json(result.rows[0]);
+  } catch (error) {
+    next(error);
+  }
+});
+
 app.post('/api/listings', async (req, res, next) => {
   try {
     const {
