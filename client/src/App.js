@@ -8,17 +8,29 @@ import ShoeDetail from './pages/ShoeDetail';
 import ApparelDetail from './pages/ApparelDetail';
 import Header from './components/Header';
 import { Routes, Route } from 'react-router-dom';
+import { useState } from 'react';
 
 export default function App() {
+  const [isSignedIn, setIsSignedIn] = useState(false);
+
+  function handleSignIn() {
+    setIsSignedIn(true);
+  }
+
+  function handleSignOut() {
+    setIsSignedIn(false);
+  }
+
   return (
     <div>
-      <Header />
+      <Header isSignedIn={isSignedIn} onSignOut={handleSignOut} />
       <Routes>
+        {isSignedIn && <Route path="/" element={<Category />} />}
         <Route path="/" element={<Category />} />
         <Route path="shoes" element={<Shoes />} />
         <Route path="apparels" element={<Apparels />} />
-        <Route path="sign-in" element={<SignIn />} />
-        <Route path="sign-up" element={<SignUp />} />
+        <Route path="/sign-in" element={<SignIn onSignIn={handleSignIn} />} />
+        <Route path="/sign-up" element={<SignUp />} />
         <Route path="shoes/:listingId" element={<ShoeDetail />} />
         <Route path="apparels/:listingId" element={<ApparelDetail />} />
       </Routes>
