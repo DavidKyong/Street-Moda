@@ -1,40 +1,79 @@
+import { useState } from 'react';
+import { SigningUp } from '../data';
+import { Link } from 'react-router-dom';
+
 export default function SignUp() {
+  const [isLoading, setIsLoading] = useState(false);
+
+  async function handleSubmit(event) {
+    event.preventDefault();
+    try {
+      setIsLoading(true);
+      const formData = new FormData(event.target);
+      const userData = Object.fromEntries(formData.entries());
+      SigningUp(userData);
+    } catch (error) {
+      alert(`Error registering user: ${error}`);
+    } finally {
+      setIsLoading(false);
+    }
+  }
   return (
-    <div className="sign-in-container border-solid border-2 border-black">
-      <div className="row">
-        <div className="column">
-          <h1>Sign In</h1>
+    <div className="flex items-center justify-center mt-5">
+      <div className="register-container border-solid border-2 border-black w-3/4">
+        <div className="row">
+          <div className="justify-center flex">
+            <h1>Register</h1>
+          </div>
         </div>
+        <form className="m-3" onSubmit={handleSubmit}>
+          <div className="">
+            <div className="flex justify-center mb-4">
+              <label>
+                Username
+                <input
+                  required
+                  name="username"
+                  type="text"
+                  className="border-solid border-2 rounded-full pl-3"></input>
+              </label>
+            </div>
+            <div className="flex justify-center mb-4">
+              <label>
+                Password
+                <input
+                  required
+                  name="password"
+                  type="password"
+                  className="border-solid border-2 rounded-full pl-3"></input>
+              </label>
+            </div>
+            <div className="flex justify-center">
+              <label>
+                Email
+                <input
+                  required
+                  name="email"
+                  type="email"
+                  className="border-solid border-2 rounded-full pl-3"></input>
+              </label>
+            </div>
+          </div>
+          <div className="flex justify-center">
+            <p className="mr-1">Already have an account?</p>
+            <Link to="sign-in">Sign In</Link>
+          </div>
+          <div className="row">
+            <div className="flex justify-end">
+              <button
+                disabled={isLoading}
+                className="bg-gray-300 hover:bg-gray-500 text-black font-bold py-2 px-4 rounded-full">
+                Register
+              </button>
+            </div>
+          </div>
+        </form>
       </div>
-      <form>
-        <div className="row">
-          <div className="column">
-            <label>
-              Username
-              <input
-                required
-                name="username"
-                type="text"
-                className="border-solid border-2 rounded-full pl-3"></input>
-            </label>
-            <label>
-              Password
-              <input
-                required
-                name="password"
-                type="text"
-                className="border-solid border-2 rounded-full pl-3"></input>
-            </label>
-          </div>
-        </div>
-        <div className="row">
-          <div className="column">
-            <button className="bg-gray-300 hover:bg-gray-500 text-black font-bold py-2 px-4 rounded-full">
-              Sign In
-            </button>
-          </div>
-        </div>
-      </form>
     </div>
   );
 }
