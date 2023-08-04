@@ -23,6 +23,18 @@ export async function readListing() {
   return await res.json();
 }
 
+export async function readUserListings(userId) {
+  const req = {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('token')}`,
+    },
+  };
+  const res = await fetch(`api/sell/${userId}`, req);
+  if (!res.ok) throw new Error(`fetch Error ${res.status}`);
+  return await res.json();
+}
+
 export async function readShoeListing() {
   const req = {
     method: 'GET',

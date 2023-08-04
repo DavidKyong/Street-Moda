@@ -168,6 +168,29 @@ app.get('/api/apparels/:listingId', async (req, res, next) => {
   }
 });
 
+app.get('/api/sell/:userId', async (req, res, next) => {
+  try {
+    const userId = Number(req.params.userId);
+    if (!userId) {
+      throw new ClientError(400, 'userId must be a positive integer');
+    }
+
+    const sql = `
+      select *
+      from "listings"
+      where "userId" = $1
+    `;
+    const params = [userId];
+    const result = await db.query(sql, params);
+    if (!result.rows) {
+      throw new ClientError(404, `cannot find product with userId ${userId}`);
+    }
+    res.status(201).json(result.rows);
+  } catch (error) {
+    next(error);
+  }
+});
+
 app.post('/api/listings', async (req, res, next) => {
   try {
     const {
