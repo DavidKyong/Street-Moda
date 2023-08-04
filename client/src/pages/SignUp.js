@@ -61,7 +61,7 @@ export default function SignUp() {
           </div>
           <div className="flex justify-center">
             <p className="mr-1">Already have an account?</p>
-            <Link to="sign-in">Sign In</Link>
+            <Link to="/sign-in">Sign In</Link>
           </div>
           <div className="row">
             <div className="flex justify-end">
