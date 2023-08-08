@@ -19,6 +19,7 @@ export default function NewList() {
     };
 
     uploadFile(data);
+    form.reset();
   }
 
   async function uploadFile(newForm) {

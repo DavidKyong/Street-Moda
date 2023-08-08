@@ -358,7 +358,7 @@ app.put(
 );
 
 app.delete(
-  'api/listings/:listingId',
+  '/api/sell/:listingId',
   authorizationMiddleware,
   async (req, res, next) => {
     try {
@@ -366,12 +366,13 @@ app.delete(
       if (!Number.isInteger(listingId)) {
         throw new ClientError(400, 'listingId must be an integer');
       }
+      console.log(listingId);
       const sql = `
     delete from "listings"
-      where "listingId" = $1
+      where "listingId" = $1 and "userId" = $2
       returning *;
     `;
-      const params = [listingId];
+      const params = [listingId, req.user.userId];
       const result = await db.query(sql, params);
       const [deleted] = result.rows;
       if (!deleted) {
