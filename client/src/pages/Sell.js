@@ -1,5 +1,5 @@
 import { Link, useParams } from 'react-router-dom';
-import { readUserListings } from '../data';
+import { readUserListings, removeListing } from '../data';
 import { useState, useEffect } from 'react';
 
 export default function Sell() {
@@ -7,6 +7,8 @@ export default function Sell() {
   const [listing, setListing] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedListingId, setSelectedListingId] = useState(null);
 
   useEffect(() => {
     async function load(userId) {
@@ -24,6 +26,30 @@ export default function Sell() {
     load(userId);
   }, [userId]);
 
+  function handleModalClose() {
+    setShowModal(false);
+    setSelectedListingId(null);
+  }
+
+  function handleModalShow(listingId) {
+    setShowModal(true);
+    setSelectedListingId(listingId);
+  }
+
+  async function handleDelete() {
+    try {
+      if (selectedListingId) {
+        await removeListing(selectedListingId);
+        setListing((prevListing) =>
+          prevListing.filter((item) => item.listingId !== selectedListingId)
+        );
+        handleModalClose();
+      }
+    } catch (error) {
+      console.error('Error deleting listing:', error);
+    }
+  }
+
   if (isLoading) return <div>Loading...</div>;
   if (error) {
     return (
@@ -37,24 +63,26 @@ export default function Sell() {
   return (
     <div>
       <div className="ml-10">
+        <h1>Username</h1>
+        <h3>Joined in ...</h3>
         <div>
-          <h1>Username</h1>
-          <h3>Joined in ...</h3>
+          <h2>For Sale</h2>
         </div>
         <div className="flex justify-end mr-10">
           <Link
-            to={`/sell/${userId}/new-listing`}
-            className="border-2 border-black text-white bg-black">
-            + NEW LISTING
+            className="border-2 border-black"
+            to={`/sell/${userId}/new-listing`}>
+            +New Listing
           </Link>
-        </div>
-        <div>
-          <h2>For Sale</h2>
         </div>
         <ul>
           {listing.length > 0 ? (
             listing.map((list) => (
-              <ListItem key={list.listingId} listing={list} />
+              <ListItem
+                key={list.listingId}
+                listing={list}
+                handleDelete={() => handleModalShow(list.listingId)}
+              />
             ))
           ) : (
             <div>
@@ -63,25 +91,42 @@ export default function Sell() {
           )}
         </ul>
       </div>
+      {showModal && (
+        <div className="modal fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
+          <div className="modal-content bg-white p-20 rounded-lg shadow-md">
+            <p>Are you sure you want to delete this listing?</p>
+            <div className="modal-buttons">
+              <button onClick={handleModalClose}>No</button>
+              <button onClick={handleDelete}>Yes</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
 
-function ListItem({ listing }) {
+function ListItem({ listing, handleDelete }) {
   const { name, price, images } = listing;
   return (
-    <div className="flex">
+    <div className="flex m-10">
       <img
-        className="basis-1/4"
+        className="basis-1/4 w-10"
         src={`${images}`}
         placeholder="empty"
         alt="empty"
       />
-      <h1 className="basis-1/4">{name}</h1>
-      <h1 className="basis-1/4">{price}</h1>
+      <h1 className="basis-1/4 flex justify-center">{name}</h1>
+      <h1 className="basis-1/4 flex justify-center">${price}</h1>
       <div className="basis-1/4">
-        <button className="border-2 border-black">Edit</button>
-        <button className="border-2 border-black">Delete</button>
+        <button className="border-2 border-black flex justify-center">
+          Edit
+        </button>
+        <button
+          onClick={handleDelete}
+          className="border-2 border-black flex justify-center">
+          Delete
+        </button>
       </div>
     </div>
   );

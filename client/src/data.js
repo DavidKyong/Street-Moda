@@ -104,13 +104,13 @@ export async function updateListing(entry) {
   return await res.json();
 }
 
-export async function removeListing(entryId) {
+export async function removeListing(listingId) {
   const req = {
     method: 'DELETE',
     headers: {
       Authorization: `Bearer ${localStorage.getItem('token')}`,
     },
   };
-  const res = await fetch(`/api/entries/${entryId}`, req);
+  const res = await fetch(`/api/sell/${listingId}`, req);
   if (!res.ok) throw new Error(`fetch Error ${res.status}`);
 }
