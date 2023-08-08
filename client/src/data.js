@@ -90,16 +90,16 @@ export async function addListing(newListing) {
   return await res.json();
 }
 
-export async function updateListing(entry) {
+export async function updateListing(entry, userId, listingId) {
   const req = {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${localStorage.getItem('token')}`,
     },
-    body: JSON.stringify(entry),
+    body: entry,
   };
-  const res = await fetch(`/api/entries/${entry.entryId}`, req);
+  const res = await fetch(`/api/${userId}/edit/${listingId}`, req);
   if (!res.ok) throw new Error(`fetch Error ${res.status}`);
   return await res.json();
 }

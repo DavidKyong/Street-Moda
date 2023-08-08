@@ -11,7 +11,6 @@ export default function Header() {
   }
 
   function handleSignOutConfirmed() {
-    localStorage.removeItem('userId');
     setShowModal(false);
     handleSignOut();
   }

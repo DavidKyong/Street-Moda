@@ -238,16 +238,8 @@ app.post(
   async (req, res, next) => {
     try {
       console.log('req', req);
-      const {
-        category,
-        brand,
-        name,
-        description,
-        price,
-        size,
-        condition,
-        fileName,
-      } = req.body;
+      const { category, brand, name, description, price, size, condition } =
+        req.body;
       if (
         !category ||
         !brand ||
@@ -259,7 +251,7 @@ app.post(
       ) {
         throw new ClientError(400, 'input fields are required');
       }
-      const url = `/images/${fileName}`;
+      const url = `/images/${req.file.filename}`;
       const sql = `
       insert into "listings" ("userId", "category", "brand", "name", "description", "price", "size", "condition", "images")
       values ($1, $2, $3, $4, $5, $6, $7, $8, $9)
@@ -286,8 +278,9 @@ app.post(
 );
 
 app.put(
-  'api/listings/:listingId',
+  'api/sell/:userId/edit/:listingId',
   authorizationMiddleware,
+  uploadsMiddleware.single('image'),
   async (req, res, next) => {
     try {
       const listingId = Number(req.params.listingId);
@@ -299,9 +292,7 @@ app.put(
         price,
         size,
         condition,
-        images,
-        email,
-        phoneNumber,
+        fileName,
       } = req.body;
       if (
         !Number.isInteger(listingId) ||
@@ -311,9 +302,7 @@ app.put(
         !description ||
         !price ||
         !size ||
-        !condition ||
-        !images ||
-        !email
+        !condition
       ) {
         throw new ClientError(400, 'input fields are required');
       }
@@ -327,9 +316,7 @@ app.put(
             "size" = $6,
             "condition" = $7,
             "images" = $8,
-            "email" = $9,
-            "phoneNumber" =$ 10
-      where "listingId" = $11
+      where "listingId" = $9
       returning *;
     `;
       const params = [
@@ -340,9 +327,7 @@ app.put(
         price,
         size,
         condition,
-        images,
-        email,
-        phoneNumber,
+        fileName,
         listingId,
       ];
       const result = await db.query(sql, params);
@@ -350,6 +335,7 @@ app.put(
       if (!entry) {
         throw new ClientError(404, `Listing with id ${listingId} not found`);
       }
+      console.log(req.user.userId);
       res.status(201).json(entry);
     } catch (error) {
       next(error);
