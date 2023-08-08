@@ -31,13 +31,13 @@ export default function Apparels() {
     <>
       <div className="listing-page mt-7">
         <h2 className="ml-10 text-3xl">Apparels</h2>
-        <ul>
+        <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-12">
           {apparels.length > 0 ? (
             apparels.map((apparel) => (
               <ListItem key={apparel.listingId} listing={apparel} />
             ))
           ) : (
-            <li>No products</li>
+            <li className="flex justify-center">No products</li>
           )}
         </ul>
       </div>
@@ -46,20 +46,19 @@ export default function Apparels() {
 }
 
 function ListItem({ listing }) {
-  const { listingId, name, price, size, images } = listing;
+  const { listingId, name, price, size, images, brand } = listing;
   return (
-    <Link to={`/shoes/${listingId}`}>
-      <li>
-        <div className="flex justify ml-10 mt-5">
-          <div className="basis-1/4">
-            <img
-              src={`/images/${images}`}
-              alt="placeholder"
-              className="w-3/4"
-            />
-            <p>{name}</p>
-            <p>${price}</p>
+    <Link to={`/apparels/${listingId}`}>
+      <li className="mr-10 ml-10">
+        <div className="card-container">
+          <img src={`${images}`} alt="placeholder" className="w-full" />
+          <div className="flex mt-2 justify-between">
+            <p className="mr-10 mb-2">{brand}</p>
             <p>{size}</p>
+          </div>
+          <div>
+            <p className="mb-2 shoe-name">{name}</p>
+            <p>${price}</p>
           </div>
         </div>
       </li>

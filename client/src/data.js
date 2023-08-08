@@ -1,3 +1,15 @@
+export async function readListing() {
+  const req = {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('token')}`,
+    },
+  };
+  const res = await fetch('/api/listings', req);
+  if (!res.ok) throw new Error(`fetch Error ${res.status}`);
+  return await res.json();
+}
+
 export async function SigningUp(userData) {
   const req = {
     method: 'POST',
@@ -11,18 +23,6 @@ export async function SigningUp(userData) {
   return await res.json();
 }
 
-export async function readListing() {
-  const req = {
-    method: 'GET',
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem('token')}`,
-    },
-  };
-  const res = await fetch('/api/listings', req);
-  if (!res.ok) throw new Error(`fetch Error ${res.status}`);
-  return await res.json();
-}
-
 export async function readUserListings(userId) {
   const req = {
     method: 'GET',
@@ -30,7 +30,8 @@ export async function readUserListings(userId) {
       Authorization: `Bearer ${localStorage.getItem('token')}`,
     },
   };
-  const res = await fetch(`api/sell/${userId}`, req);
+  const res = await fetch(`/api/sell/${userId}`, req);
+  console.log(userId);
   if (!res.ok) throw new Error(`fetch Error ${res.status}`);
   return await res.json();
 }
@@ -38,9 +39,6 @@ export async function readUserListings(userId) {
 export async function readShoeListing() {
   const req = {
     method: 'GET',
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem('token')}`,
-    },
   };
   const res = await fetch('/api/shoes', req);
   if (!res.ok) throw new Error(`fetch Error ${res.status}`);
@@ -62,9 +60,6 @@ export async function readApparelListing() {
 export async function readShoesListId(listingId) {
   const req = {
     method: 'GET',
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem('token')}`,
-    },
   };
   const res = await fetch(`/api/shoes/${listingId}`, req);
   if (!res.ok) throw new Error(`fetch Error ${res.status}`);
@@ -74,25 +69,23 @@ export async function readShoesListId(listingId) {
 export async function readApparelsListId(listingId) {
   const req = {
     method: 'GET',
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem('token')}`,
-    },
   };
   const res = await fetch(`/api/apparels/${listingId}`, req);
   if (!res.ok) throw new Error(`fetch Error ${res.status}`);
   return await res.json();
 }
 
-export async function addListing(entry) {
+export async function addListing(newListing) {
+  console.log('newListing', newListing);
   const req = {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${localStorage.getItem('token')}`,
     },
-    body: JSON.stringify(entry),
+    body: newListing,
   };
-  const res = await fetch('/api/entries', req);
+  const res = await fetch('/api/sell/new-listing', req);
   if (!res.ok) throw new Error(`fetch Error ${res.status}`);
   return await res.json();
 }
