@@ -1,21 +1,19 @@
+import React, { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import AppContext from '../components/AppContext';
 
-export default function Header({ isSignedIn, onSignOut }) {
+export default function Header() {
+  const { isSignedIn, handleSignOut, userId } = useContext(AppContext);
   const [showModal, setShowModal] = useState(false);
-
-  function handleSignOut() {
-    setShowModal(true);
-  }
 
   function handleModalClose() {
     setShowModal(false);
   }
 
   function handleSignOutConfirmed() {
-    localStorage.removeItem('token');
+    localStorage.removeItem('userId');
     setShowModal(false);
-    onSignOut();
+    handleSignOut();
   }
 
   return (
@@ -27,14 +25,16 @@ export default function Header({ isSignedIn, onSignOut }) {
               <Link to="/">Street Moda</Link>
             </div>
             <div className="basis-1/3 ml-10">
-              <Link to="sell" className="">
-                SELL
-              </Link>
+              {isSignedIn && (
+                <Link to={`/sell/${userId}`} className="">
+                  SELL
+                </Link>
+              )}
             </div>
             {isSignedIn ? (
               <div className="basis-1/3">
                 <button
-                  onClick={handleSignOut}
+                  onClick={() => setShowModal(true)}
                   className="border-solid border-4 py-2 px-4">
                   SIGN OUT
                 </button>

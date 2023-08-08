@@ -1,8 +1,10 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
+import AppContext from '../components/AppContext';
 
-export default function SignIn({ onSignIn }) {
+export default function SignIn() {
   const [isLoading, setIsLoading] = useState(false);
+  const { handleSignIn } = useContext(AppContext);
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -20,8 +22,7 @@ export default function SignIn({ onSignIn }) {
         throw new Error(`fetch Error ${res.status}`);
       }
       const { user, token } = await res.json();
-      onSignIn();
-
+      handleSignIn(user.userId);
       localStorage.setItem('token', token);
       console.log('Signed In', user, '; received token:', token);
     } catch (error) {
@@ -74,7 +75,7 @@ export default function SignIn({ onSignIn }) {
               <button
                 disabled={isLoading}
                 className="bg-gray-300 hover:bg-gray-500 text-black font-bold py-2 px-4 rounded-full">
-                Login
+                {isLoading ? 'Logging in...' : 'Login'}
               </button>
             </div>
           </div>

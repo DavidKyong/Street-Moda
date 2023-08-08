@@ -3,6 +3,7 @@ import express from 'express';
 import errorMiddleware from './lib/error-middleware.js';
 import ClientError from './lib/client-error.js';
 import { authorizationMiddleware } from './lib/authorization-middleware.js';
+import uploadsMiddleware from './lib/upload-middleware.js';
 import pg from 'pg';
 import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
@@ -27,17 +28,20 @@ app.use(express.json());
 
 app.post('/api/auth/sign-up', async (req, res, next) => {
   try {
-    const { username, password } = req.body;
-    if (!username || !password) {
-      throw new ClientError(400, 'username and password are required fields');
+    const { username, password, email } = req.body;
+    if (!username || !password || !email) {
+      throw new ClientError(
+        400,
+        'username, password, email are required fields'
+      );
     }
     const hashedPassword = await argon2.hash(password);
     const sql = `
-      insert into "user" ("username", "hashedPassword")
-      values ($1, $2)
+      insert into "user" ("username", "hashedPassword", "email")
+      values ($1, $2, $3)
       returning *;
     `;
-    const params = [username, hashedPassword];
+    const params = [username, hashedPassword, email];
     const result = await db.query(sql, params);
     const [user] = result.rows;
     res.status(201).json(user);
@@ -53,9 +57,8 @@ app.post('/api/auth/sign-in', async (req, res, next) => {
       throw new ClientError(401, 'invalid login');
     }
     const sql = `
-      select "userId",
-            "hashedPassword"
-        from "user"
+      select "userId", "hashedPassword"
+      from "user"
       where "username" = $1
     `;
     const params = [username];
@@ -73,6 +76,18 @@ app.post('/api/auth/sign-in', async (req, res, next) => {
     res.json({ token, user: payload });
   } catch (err) {
     next(err);
+  }
+});
+
+app.get('/api/user', async (req, res, next) => {
+  try {
+    const sql = `
+    select "username" from "user"
+    `;
+    const result = await db.query(sql);
+    res.status(201).json(result.rows);
+  } catch (error) {
+    next(error);
   }
 });
 
@@ -122,8 +137,7 @@ app.get('/api/shoes/:listingId', async (req, res, next) => {
     }
 
     const sql = `
-      select "listingId",
-             "category", "brand", "name", "description", "price", "size", "condition", "images", "email", "phoneNumber"
+      select *
              from "listings"
       where "listingId" = $1 and "category" = 'shoes'
     `;
@@ -149,8 +163,7 @@ app.get('/api/apparels/:listingId', async (req, res, next) => {
     }
 
     const sql = `
-      select "listingId",
-             "category", "brand", "name", "description", "price", "size", "condition", "images", "email", "phoneNumber"
+      select *
              from "listings"
       where "listingId" = $1 and "category" = 'apparels'
     `;
@@ -168,81 +181,109 @@ app.get('/api/apparels/:listingId', async (req, res, next) => {
   }
 });
 
-app.get('/api/sell/:userId', async (req, res, next) => {
-  try {
-    const userId = Number(req.params.userId);
-    if (!userId) {
-      throw new ClientError(400, 'userId must be a positive integer');
-    }
+app.get(
+  '/api/sell/:userId',
+  authorizationMiddleware,
+  async (req, res, next) => {
+    try {
+      const userId = Number(req.params.userId);
+      if (!userId) {
+        throw new ClientError(400, 'userId must be a positive integer');
+      }
 
-    const sql = `
+      const sql = `
       select *
       from "listings"
       where "userId" = $1
     `;
-    const params = [userId];
-    const result = await db.query(sql, params);
-    if (!result.rows) {
-      throw new ClientError(404, `cannot find product with userId ${userId}`);
+      const params = [userId];
+      const result = await db.query(sql, params);
+      if (!result.rows) {
+        throw new ClientError(404, `cannot find product with userId ${userId}`);
+      }
+      res.status(201).json(result.rows);
+    } catch (error) {
+      next(error);
     }
-    res.status(201).json(result.rows);
-  } catch (error) {
-    next(error);
   }
-});
+);
 
-app.post('/api/listings', async (req, res, next) => {
-  try {
-    const {
-      category,
-      brand,
-      name,
-      description,
-      price,
-      size,
-      condition,
-      images,
-      email,
-      phoneNumber,
-    } = req.body;
-    if (
-      !category ||
-      !brand ||
-      !name ||
-      !description ||
-      !price ||
-      !size ||
-      !condition ||
-      !images ||
-      !email
-    ) {
-      throw new ClientError(400, 'input fields are required');
-    }
-    const sql = `
-      insert into "listings" ("category", "brand", "name", "description", "price", "size", "condition", "images", "email", "phoneNumber")
-      values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+// app.get('/api/sell/:userId', authorizationMiddleware, async (req, res, next) => {
+//   try {
+//     const userId = Number(req.params.userId);
+//     if (!userId) {
+//       throw new ClientError(400, 'userId must be a positive integer');
+//     }
+
+//     const sql = `
+//       select *
+//       from "listings" order by "lastUpdated" asec;
+//       where "userId" = $1
+//     `;
+//     const params = [userId];
+//     const result = await db.query(sql, params);
+//     if (!result.rows) {
+//       throw new ClientError(404, `cannot find product with userId ${userId}`);
+//     }
+//     res.status(201).json(result.rows);
+//   } catch (error) {
+//     next(error);
+//   }
+// });
+
+app.post(
+  '/api/sell/new-listing',
+  authorizationMiddleware,
+  uploadsMiddleware.single('image'),
+  async (req, res, next) => {
+    try {
+      console.log('req', req);
+      const {
+        category,
+        brand,
+        name,
+        description,
+        price,
+        size,
+        condition,
+        fileName,
+      } = req.body;
+      if (
+        !category ||
+        !brand ||
+        !name ||
+        !description ||
+        !price ||
+        !size ||
+        !condition
+      ) {
+        throw new ClientError(400, 'input fields are required');
+      }
+      const url = `/images/${fileName}`;
+      const sql = `
+      insert into "listings" ("userId", "category", "brand", "name", "description", "price", "size", "condition", "images")
+      values ($1, $2, $3, $4, $5, $6, $7, $8, $9)
       returning *;
     `;
-    const params = [
-      req.userId,
-      category,
-      brand,
-      name,
-      description,
-      price,
-      size,
-      condition,
-      images,
-      email,
-      phoneNumber,
-    ];
-    const result = await db.query(sql, params);
-    const [entry] = result.rows;
-    res.status(201).json(entry);
-  } catch (error) {
-    next(error);
+      const params = [
+        req.user.userId,
+        category,
+        brand,
+        name,
+        description,
+        price,
+        size,
+        condition,
+        url,
+      ];
+      const result = await db.query(sql, params);
+      const [entry] = result.rows;
+      res.status(201).json(entry);
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
 
 app.put(
   'api/listings/:listingId',

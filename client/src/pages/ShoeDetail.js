@@ -32,14 +32,14 @@ export default function ShoeDetail() {
     );
   }
   if (!product) return null;
-  const { name, category, brand, description, price, size, condition, email } =
+  const { name, category, brand, description, price, size, condition, images } =
     product;
 
   return (
     <>
       <div className="flex mt-8">
         <div className="w-1/2 flex justify-center">
-          <img alt="placeholder"></img>
+          <img src={`${images}`} alt="placeholder" className="ml-10"></img>
           {/* Carousel/click image stretch feature */}
         </div>
         <div className="w-1/2 flex justify-center ">
@@ -47,10 +47,9 @@ export default function ShoeDetail() {
             <li>{name}</li>
             <li className="mt-4">{category}</li>
             <li className="mt-4">{brand}</li>
-            <li className="mt-4">{size}</li>
-            <li className="mt-4">{condition}</li>
+            <li className="mt-4">Size {size}</li>
+            <li className="mt-4">Condition {condition}</li>
             <li className="mt-4">{price}</li>
-            <li className="mt-4">{email}</li>
           </ul>
         </div>
       </div>
