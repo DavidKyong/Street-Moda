@@ -82,6 +82,7 @@ export default function Sell() {
                 key={list.listingId}
                 listing={list}
                 handleDelete={() => handleModalShow(list.listingId)}
+                userId={userId}
               />
             ))
           ) : (
@@ -121,7 +122,7 @@ function ListItem({ listing, handleDelete, userId }) {
       <div className="basis-1/4">
         <Link
           className="border-2 border-black flex justify-center"
-          to={`/sell/${userId}/edit/${listingId}`}>
+          to={`/sell/${userId}/edit/${listing.listingId}`}>
           Edit
         </Link>
         <button

@@ -9,8 +9,8 @@ import ShoeDetail from './pages/ShoeDetail';
 import ApparelDetail from './pages/ApparelDetail';
 import Header from './components/Header';
 import Sell from './pages/Sell';
-import NewList from './pages/UserPage';
 import UserPage from './pages/UserPage';
+import EditListing from './pages/EditListing';
 import AppContext from './components/AppContext';
 import './App.css';
 
@@ -58,7 +58,7 @@ export default function App() {
               <Route path="/sell/:userId/new-listing" element={<UserPage />} />
               <Route
                 path="/sell/:userId/edit/:listingId"
-                element={<NewList isEditMode={true} userId={userId} />}
+                element={<EditListing />}
               />
             </>
           ) : (
