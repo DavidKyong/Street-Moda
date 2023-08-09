@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 
 export default function Sell() {
   const { userId } = useParams();
-  const [listing, setListing] = useState([]);
+  const [listings, setListings] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -15,7 +15,7 @@ export default function Sell() {
       setIsLoading(true);
       try {
         const userData = await readUserListings(userId);
-        setListing(userData);
+        setListings(userData);
       } catch (error) {
         setError(error);
       } finally {
@@ -40,7 +40,7 @@ export default function Sell() {
     try {
       if (selectedListingId) {
         await removeListing(selectedListingId);
-        setListing((prevListing) =>
+        setListings((prevListing) =>
           prevListing.filter((item) => item.listingId !== selectedListingId)
         );
         handleModalClose();
@@ -58,7 +58,7 @@ export default function Sell() {
       </div>
     );
   }
-  if (!listing) return null;
+  if (!listings) return null;
 
   return (
     <div>
@@ -76,12 +76,13 @@ export default function Sell() {
           </Link>
         </div>
         <ul>
-          {listing.length > 0 ? (
-            listing.map((list) => (
+          {listings.length > 0 ? (
+            listings.map((list) => (
               <ListItem
                 key={list.listingId}
                 listing={list}
                 handleDelete={() => handleModalShow(list.listingId)}
+                userId={userId}
               />
             ))
           ) : (
@@ -106,8 +107,8 @@ export default function Sell() {
   );
 }
 
-function ListItem({ listing, handleDelete }) {
-  const { name, price, images } = listing;
+function ListItem({ listing, handleDelete, userId }) {
+  const { listingId, name, price, images } = listing;
   return (
     <div className="flex m-10">
       <img
@@ -119,9 +120,11 @@ function ListItem({ listing, handleDelete }) {
       <h1 className="basis-1/4 flex justify-center">{name}</h1>
       <h1 className="basis-1/4 flex justify-center">${price}</h1>
       <div className="basis-1/4">
-        <button className="border-2 border-black flex justify-center">
+        <Link
+          className="border-2 border-black flex justify-center"
+          to={`/sell/${userId}/edit/${listing.listingId}`}>
           Edit
-        </button>
+        </Link>
         <button
           onClick={handleDelete}
           className="border-2 border-black flex justify-center">

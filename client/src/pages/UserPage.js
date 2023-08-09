@@ -1,43 +1,46 @@
 import { useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
 
 export default function NewList() {
-  const [isLoading, setIsLoading] = useState();
+  const { userId } = useParams();
+  const [isLoading, setIsLoading] = useState(false);
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
+    setIsLoading(true);
+    const formData = new FormData(event.target);
 
-    const form = event.target;
-    const data = {
-      category: form.category.value,
-      brand: form.brand.value,
-      name: form.name.value,
-      description: form.description.value,
-      price: form.price.value,
-      size: form.size.value,
-      condition: form.condition.value,
-      fileName: form.fileInput.files[0].name,
-    };
-
-    uploadFile(data);
-    form.reset();
+    try {
+      await uploadFile(formData);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
   }
 
-  async function uploadFile(newForm) {
+  async function uploadFile(formData) {
     const req = {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
-        'Content-Type': 'application/json',
       },
-      body: JSON.stringify(newForm),
+      body: formData,
     };
-    const response = await fetch(`/api/sell/new-listing`, req);
-    if (!response.ok) {
-      throw new Error(`Fetch Error ${response.status}`);
+
+    try {
+      const response = await fetch('/api/sell/new-listing', req);
+
+      if (!response.ok) {
+        throw new Error(`Fetch Error ${response.status}`);
+      }
+
+      const responseBody = await response.json();
+      return responseBody;
+    } catch (error) {
+      console.error(error);
+      throw error;
     }
-    const responseBody = await response.json();
-    console.log(responseBody);
-    return responseBody;
   }
 
   return (
@@ -46,28 +49,18 @@ export default function NewList() {
         <div className="ml-10">
           <h1 className="text-3xl mb-4">Add a new listing</h1>
           <p>Category</p>
-          <select
-            name="category"
-            type="text"
-            className="border-2 border-black"
-            required>
+          <select name="category" className="border-2 border-black" required>
             <option value="apparels">Apparels</option>
             <option value="shoes">Shoes</option>
           </select>
           <p>Brand</p>
-          <input
-            name="brand"
-            className="border-2 border-black"
-            required></input>
+          <input name="brand" className="border-2 border-black" required />
           <p>Item Name</p>
-          <input name="name" className="border-2 border-black" required></input>
+          <input name="name" className="border-2 border-black" required />
           <p>Price</p>
-          <input
-            name="price"
-            className="border-2 border-black"
-            required></input>
+          <input name="price" className="border-2 border-black" required />
           <p>Size</p>
-          <input name="size" className="border-2 border-black" required></input>
+          <input name="size" className="border-2 border-black" required />
           <p>Condition</p>
           <select name="condition" className="border-2 border-black" required>
             <option value="new">New/Never been worn</option>
@@ -85,16 +78,20 @@ export default function NewList() {
           <p>Photos</p>
           <input
             type="file"
-            name="fileInput"
+            name="image"
             accept=".png, .jpg, .jpeg, .gif"
             className="border-2 border-black"
-            required></input>
+            required
+          />
           <button
             type="submit"
             disabled={isLoading}
             className="bg-black text-white ml-10">
             Publish
           </button>
+          <div>
+            <Link to={`/sell/${userId}`}>Cancel</Link>
+          </div>
         </div>
       </form>
     </div>

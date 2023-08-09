@@ -91,13 +91,19 @@ app.get('/api/user', async (req, res, next) => {
   }
 });
 
-app.get('/api/listings', async (req, res, next) => {
+app.get('/api/listings/:listingId', async (req, res, next) => {
   try {
+    const listingId = Number(req.params.listingId);
     const sql = `
-      select * from "listings" order by "lastUpdated" desc;
+      select * from "listings" where "listingId" = $1;
     `;
-    const result = await db.query(sql);
-    res.status(201).json(result.rows);
+    const result = await db.query(sql, [listingId]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Listing not found' });
+    }
+
+    res.status(200).json(result.rows[0]);
   } catch (error) {
     next(error);
   }
@@ -108,6 +114,7 @@ app.get('/api/apparels', async (req, res, next) => {
     const sql = `
       select * from "listings"
       where "category" = 'apparels'
+      order by "listingId" desc
     `;
     const result = await db.query(sql);
     res.status(201).json(result.rows);
@@ -121,6 +128,7 @@ app.get('/api/shoes', async (req, res, next) => {
     const sql = `
       select * from "listings"
       where "category" = 'shoes'
+      order by "listingId" desc
     `;
     const result = await db.query(sql);
     res.status(201).json(result.rows);
@@ -237,17 +245,8 @@ app.post(
   uploadsMiddleware.single('image'),
   async (req, res, next) => {
     try {
-      console.log('req', req);
-      const {
-        category,
-        brand,
-        name,
-        description,
-        price,
-        size,
-        condition,
-        fileName,
-      } = req.body;
+      const { category, brand, name, description, price, size, condition } =
+        req.body;
       if (
         !category ||
         !brand ||
@@ -259,7 +258,7 @@ app.post(
       ) {
         throw new ClientError(400, 'input fields are required');
       }
-      const url = `/images/${fileName}`;
+      const url = `/images/${req.file.filename}`;
       const sql = `
       insert into "listings" ("userId", "category", "brand", "name", "description", "price", "size", "condition", "images")
       values ($1, $2, $3, $4, $5, $6, $7, $8, $9)
@@ -286,37 +285,26 @@ app.post(
 );
 
 app.put(
-  'api/listings/:listingId',
+  '/api/sell/:userId/edit/:listingId',
   authorizationMiddleware,
+  uploadsMiddleware.single('image'),
   async (req, res, next) => {
     try {
       const listingId = Number(req.params.listingId);
-      const {
-        category,
-        brand,
-        name,
-        description,
-        price,
-        size,
-        condition,
-        images,
-        email,
-        phoneNumber,
-      } = req.body;
+      const { category, brand, name, description, price, size, condition } =
+        req.body;
       if (
-        !Number.isInteger(listingId) ||
         !category ||
         !brand ||
         !name ||
         !description ||
         !price ||
         !size ||
-        !condition ||
-        !images ||
-        !email
+        !condition
       ) {
         throw new ClientError(400, 'input fields are required');
       }
+      const url = `/images/${req.file.filename}`;
       const sql = `
       update "listings"
         set "category" = $1,
@@ -326,10 +314,9 @@ app.put(
             "price" = $5,
             "size" = $6,
             "condition" = $7,
-            "images" = $8,
-            "email" = $9,
-            "phoneNumber" =$ 10
-      where "listingId" = $11
+            "images" = $8
+      where "listingId" = $9 and "userId" = $10
+      order by "listingId" desc
       returning *;
     `;
       const params = [
@@ -340,16 +327,16 @@ app.put(
         price,
         size,
         condition,
-        images,
-        email,
-        phoneNumber,
+        url,
         listingId,
+        req.user.userId,
       ];
       const result = await db.query(sql, params);
       const [entry] = result.rows;
       if (!entry) {
         throw new ClientError(404, `Listing with id ${listingId} not found`);
       }
+
       res.status(201).json(entry);
     } catch (error) {
       next(error);

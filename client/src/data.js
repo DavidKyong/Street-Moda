@@ -1,12 +1,12 @@
-export async function readListing() {
+export async function readListing(listingId) {
   const req = {
     method: 'GET',
     headers: {
       Authorization: `Bearer ${localStorage.getItem('token')}`,
     },
   };
-  const res = await fetch('/api/listings', req);
-  if (!res.ok) throw new Error(`fetch Error ${res.status}`);
+  const res = await fetch(`/api/listings/${listingId}`, req);
+  if (!res.ok) throw new Error(`Fetch Error ${res.status}`);
   return await res.json();
 }
 
@@ -31,7 +31,6 @@ export async function readUserListings(userId) {
     },
   };
   const res = await fetch(`/api/sell/${userId}`, req);
-  console.log(userId);
   if (!res.ok) throw new Error(`fetch Error ${res.status}`);
   return await res.json();
 }
@@ -48,9 +47,6 @@ export async function readShoeListing() {
 export async function readApparelListing() {
   const req = {
     method: 'GET',
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem('token')}`,
-    },
   };
   const res = await fetch('/api/apparels', req);
   if (!res.ok) throw new Error(`fetch Error ${res.status}`);
@@ -75,31 +71,15 @@ export async function readApparelsListId(listingId) {
   return await res.json();
 }
 
-export async function addListing(newListing) {
-  console.log('newListing', newListing);
-  const req = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${localStorage.getItem('token')}`,
-    },
-    body: newListing,
-  };
-  const res = await fetch('/api/sell/new-listing', req);
-  if (!res.ok) throw new Error(`fetch Error ${res.status}`);
-  return await res.json();
-}
-
-export async function updateListing(entry) {
+export async function updateListing(listingId, userId, entry) {
   const req = {
     method: 'PUT',
     headers: {
-      'Content-Type': 'application/json',
       Authorization: `Bearer ${localStorage.getItem('token')}`,
     },
-    body: JSON.stringify(entry),
+    body: entry,
   };
-  const res = await fetch(`/api/entries/${entry.entryId}`, req);
+  const res = await fetch(`/api/sell/${userId}/edit/${listingId}`, req);
   if (!res.ok) throw new Error(`fetch Error ${res.status}`);
   return await res.json();
 }
