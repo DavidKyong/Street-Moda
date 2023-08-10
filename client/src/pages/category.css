@@ -1,0 +1,16 @@
+.animate-slowdown {
+  animation: slowDownAnimation 10s infinite;
+}
+
+@keyframes slowDownAnimation {
+  0%,
+  100% {
+    opacity: 0.75;
+  }
+
+  50% {
+    opacity: 0.75;
+
+    /* Adjust the opacity or other visual properties to create a "slowdown" effect */
+  }
+}

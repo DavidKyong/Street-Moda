@@ -34,7 +34,7 @@ export default function Header() {
               <div className="basis-1/3">
                 <button
                   onClick={() => setShowModal(true)}
-                  className="border-solid border-4 py-2 px-4">
+                  className="border-solid border-2 border-black py-2 px-4">
                   SIGN OUT
                 </button>
               </div>
@@ -43,28 +43,38 @@ export default function Header() {
                 <div className="basis-1/3">
                   <Link
                     to="/sign-in"
-                    className="border-solid border-4 py-2 px-4">
+                    className="border-solid border-2 border-black py-2 px-4">
                     LOGIN
                   </Link>
                 </div>
               </>
             )}
             <div className="basis-1/3">
-              <Link to="/sign-up" className="border-solid border-4 py-2 px-4">
+              <Link
+                to="/sign-up"
+                className="border-solid border-black border-2 py-2 px-4">
                 SIGN UP
               </Link>
             </div>
           </div>
         </div>
-        <div className="bg-gray-300 mt-3">backgroundcolor</div>
+        <hr className="bg-gray mt-5 h-2"></hr>
       </div>
       {showModal && (
-        <div className="modal fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
+        <div className="modal fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center z-50">
           <div className="modal-content bg-white p-20 rounded-lg shadow-md">
-            <p>Are you sure you want to sign out?</p>
-            <div className="modal-buttons">
-              <button onClick={handleModalClose}>No</button>
-              <button onClick={handleSignOutConfirmed}>Yes</button>
+            <p className="">Are you sure you want to sign out?</p>
+            <div className="modal-buttons flex justify-evenly">
+              <button
+                className="border-2 border-black rounded-xl py-1 px-2"
+                onClick={handleModalClose}>
+                No
+              </button>
+              <button
+                className="border-2 border-black rounded-xl py-1 px-2"
+                onClick={handleSignOutConfirmed}>
+                Yes
+              </button>
             </div>
           </div>
         </div>

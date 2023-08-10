@@ -32,30 +32,37 @@ export default function ApparelDetail() {
     );
   }
   if (!product) return null;
-  const { name, category, brand, description, price, size, condition, email } =
+  const { name, category, brand, description, price, size, condition, images } =
     product;
 
   return (
     <>
       <div className="flex mt-8">
         <div className="w-1/2 flex justify-center">
-          <img alt="placeholder"></img>
+          <img
+            src={`${images}`}
+            alt="placeholder"
+            className="ml-10 w-1/2"></img>
         </div>
         <div className="w-1/2 flex justify-center ">
           <ul>
-            <li>{name}</li>
-            <li className="mt-4">{category}</li>
-            <li className="mt-4">{brand}</li>
-            <li className="mt-4">{size}</li>
-            <li className="mt-4">{condition}</li>
-            <li className="mt-4">{price}</li>
-            <li className="mt-4">{email}</li>
+            <li className="text-lg">{name}</li>
+            <li className="mt-4 text-lg">{category}</li>
+            <li className="mt-4 text-lg">{brand}</li>
+            <li className="mt-4 text-lg">
+              Size <span className="text-gray-600">{size}</span>
+            </li>
+            <li className="mt-4 text-lg">
+              Condition <span className="text-gray-600">{condition}</span>
+            </li>
+            <li className="mt-4 text-2xl text-red-700">${price}</li>
+            {/* <li className="mt-4 text-lg">{email}</li> */}
           </ul>
         </div>
       </div>
       <div className="mt-10 ml-10 mr-10">
         <h1 className="">Description</h1>
-        <p className="mt-5 border-solid border-black border-2">
+        <p className="mt-5 border-solid border-black border-2 p-4">
           Extra Description about the item that sellers should know about.
           {description}
         </p>

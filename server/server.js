@@ -91,6 +91,20 @@ app.get('/api/user', async (req, res, next) => {
   }
 });
 
+// app.get('/api/user', async (req, res, next) => {
+//   try {
+//     const sql = `
+//     select * from "user"
+//     where "userId" = $1
+//     `;
+//     const params = [req.user.userId]
+//     const result = await db.query(sql, params);
+//     res.status(201).json(result.rows);
+//   } catch (error) {
+//     next(error);
+//   }
+// });
+
 app.get('/api/listings/:listingId', async (req, res, next) => {
   try {
     const listingId = Number(req.params.listingId);
@@ -245,8 +259,16 @@ app.post(
   uploadsMiddleware.single('image'),
   async (req, res, next) => {
     try {
-      const { category, brand, name, description, price, size, condition } =
-        req.body;
+      const {
+        category,
+        brand,
+        name,
+        description,
+        price,
+        size,
+        condition,
+        contact,
+      } = req.body;
       if (
         !category ||
         !brand ||
@@ -254,13 +276,14 @@ app.post(
         !description ||
         !price ||
         !size ||
-        !condition
+        !condition ||
+        !contact
       ) {
         throw new ClientError(400, 'input fields are required');
       }
       const url = `/images/${req.file.filename}`;
       const sql = `
-      insert into "listings" ("userId", "category", "brand", "name", "description", "price", "size", "condition", "images")
+      insert into "listings" ("userId", "category", "brand", "name", "description", "price", "size", "condition", "images", "contact")
       values ($1, $2, $3, $4, $5, $6, $7, $8, $9)
       returning *;
     `;
@@ -274,6 +297,7 @@ app.post(
         size,
         condition,
         url,
+        contact,
       ];
       const result = await db.query(sql, params);
       const [entry] = result.rows;
@@ -291,8 +315,16 @@ app.put(
   async (req, res, next) => {
     try {
       const listingId = Number(req.params.listingId);
-      const { category, brand, name, description, price, size, condition } =
-        req.body;
+      const {
+        category,
+        brand,
+        name,
+        description,
+        price,
+        size,
+        condition,
+        contact,
+      } = req.body;
       if (
         !category ||
         !brand ||
@@ -300,7 +332,8 @@ app.put(
         !description ||
         !price ||
         !size ||
-        !condition
+        !condition ||
+        !contact
       ) {
         throw new ClientError(400, 'input fields are required');
       }
@@ -315,8 +348,8 @@ app.put(
             "size" = $6,
             "condition" = $7,
             "images" = $8
+            "contact" = $11
       where "listingId" = $9 and "userId" = $10
-      order by "listingId" desc
       returning *;
     `;
       const params = [
@@ -330,6 +363,7 @@ app.put(
         url,
         listingId,
         req.user.userId,
+        contact,
       ];
       const result = await db.query(sql, params);
       const [entry] = result.rows;
@@ -353,7 +387,6 @@ app.delete(
       if (!Number.isInteger(listingId)) {
         throw new ClientError(400, 'listingId must be an integer');
       }
-      console.log(listingId);
       const sql = `
     delete from "listings"
       where "listingId" = $1 and "userId" = $2

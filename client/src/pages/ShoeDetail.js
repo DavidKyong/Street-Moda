@@ -39,24 +39,30 @@ export default function ShoeDetail() {
     <>
       <div className="flex mt-8">
         <div className="w-1/2 flex justify-center">
-          <img src={`${images}`} alt="placeholder" className="ml-10"></img>
-          {/* Carousel/click image stretch feature */}
+          <img
+            src={`${images}`}
+            alt="placeholder"
+            className="ml-10 w-1/2"></img>
         </div>
         <div className="w-1/2 flex justify-center ">
           <ul>
-            <li>{name}</li>
-            <li className="mt-4">{category}</li>
-            <li className="mt-4">{brand}</li>
-            <li className="mt-4">Size {size}</li>
-            <li className="mt-4">Condition {condition}</li>
-            <li className="mt-4">{price}</li>
+            <li className="text-lg">{name}</li>
+            <li className="mt-4 text-lg">{category}</li>
+            <li className="mt-4 text-lg">{brand}</li>
+            <li className="mt-4 text-lg">
+              Size <span className="text-gray-600">{size}</span>
+            </li>
+            <li className="mt-4 text-lg">
+              Condition <span className="text-gray-600">{condition}</span>
+            </li>
+            <li className="mt-4 text-2xl text-red-700">${price}</li>
+            {/* <li className="mt-4 text-lg">{email}</li> */}
           </ul>
         </div>
       </div>
       <div className="mt-10 ml-10 mr-10">
-        <h1 className="">Description</h1>
-        <p className="mt-5 border-solid border-black border-2">
-          Extra Description about the item that sellers should know about.
+        <h1 className="text-2xl">Description</h1>
+        <p className="mt-5 border-solid border-black border-2 p-4">
           {description}
         </p>
       </div>
