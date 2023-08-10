@@ -65,12 +65,12 @@ export default function Sell() {
       <div className="ml-10">
         <h1>Username</h1>
         <h3>Joined in ...</h3>
-        <div>
+        <div className="ml-10 mt-10 text-2xl">
           <h2>For Sale</h2>
         </div>
         <div className="flex justify-end mr-10">
           <Link
-            className="border-2 border-black"
+            className="border-2 border-black p-2 bg-black text-white font-bold"
             to={`/sell/${userId}/new-listing`}>
             +New Listing
           </Link>
@@ -112,22 +112,26 @@ function ListItem({ listing, handleDelete, userId }) {
   return (
     <div className="flex m-10">
       <img
-        className="basis-1/4 w-10"
+        className="basis-1/4 w-10 items-center"
         src={`${images}`}
         placeholder="empty"
         alt="empty"
       />
-      <h1 className="basis-1/4 flex justify-center">{name}</h1>
-      <h1 className="basis-1/4 flex justify-center">${price}</h1>
-      <div className="basis-1/4">
+      <h1 className="basis-1/4 flex justify-center items-center text-xl">
+        {name}
+      </h1>
+      <h1 className="basis-1/4 flex justify-center items-center text-xl">
+        ${price}
+      </h1>
+      <div className="basis-1/4 flex items-center justify-center flex-col">
         <Link
-          className="border-2 border-black flex justify-center"
+          className="border-2 border-black flex justify-center w-full pt-3 pb-3 text-xl mb-1"
           to={`/sell/${userId}/edit/${listing.listingId}`}>
           Edit
         </Link>
         <button
           onClick={handleDelete}
-          className="border-2 border-black flex justify-center">
+          className="border-2 border-black flex justify-center w-full pt-3 pb-3 text-xl">
           Delete
         </button>
       </div>

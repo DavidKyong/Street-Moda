@@ -10,6 +10,15 @@ export async function readListing(listingId) {
   return await res.json();
 }
 
+// export async function readUser() {
+//   const req = {
+//     method: 'GET',
+//   };
+//   const res = await fetch('/api/user', req);
+//   if (!res.ok) throw new Error(`Fetch Error ${res.status}`);
+//   return await res.json();
+// }
+
 export async function SigningUp(userData) {
   const req = {
     method: 'POST',

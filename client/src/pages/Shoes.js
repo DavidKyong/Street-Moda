@@ -30,12 +30,18 @@ export default function Shoes() {
 
   return (
     <div className="listing-page mt-7">
-      <h2 className="ml-10 text-3xl">SHOES</h2>
-      <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-12">
+      <div>
+        <img
+          src="/images/shoes.png"
+          alt="placeholder"
+          className="w-full mb-10"></img>
+      </div>
+      <h2 className="ml-10 text-4xl mb-5">Shoes</h2>
+      <ul className="grid grid-cols-5 gap-10 mr-10 ml-10">
         {shoes.length > 0 ? (
           shoes.map((shoe) => <ListItem key={shoe.listingId} listing={shoe} />)
         ) : (
-          <li>No products</li>
+          <li className="flex justify-center">No products</li>
         )}
       </ul>
     </div>
@@ -45,20 +51,25 @@ export default function Shoes() {
 function ListItem({ listing }) {
   const { listingId, name, price, size, images, brand } = listing;
   return (
-    <Link to={`/shoes/${listingId}`}>
-      <li className="mr-10 ml-10">
-        <div className="card-container">
-          <img src={`${images}`} alt="placeholder" className="w-full" />
-          <div className="flex mt-2 justify-between">
-            <p className="mr-10 mb-2">{brand}</p>
-            <p>{size}</p>
-          </div>
-          <div>
-            <p className="mb-2 shoe-name">{name}</p>
-            <p>${price}</p>
-          </div>
+    <li>
+      <div className="card-container">
+        <Link to={`/shoes/${listingId}`}>
+          <img
+            src={`${images}`}
+            alt="placeholder"
+            className="w-full h-40 object-cover mb-2"
+          />
+        </Link>
+        <div className="h-0.5 bg-gray-300 my-2"></div>
+        <div className="flex mt-2 justify-between">
+          <p className="mr-10 mb-2 font-semibold">{brand}</p>
+          <p className="font-semibold">{size}</p>
         </div>
-      </li>
-    </Link>
+        <div>
+          <p className="mb-2 shoe-name text-xs">{name}</p>
+          <p>${price}</p>
+        </div>
+      </div>
+    </li>
   );
 }
