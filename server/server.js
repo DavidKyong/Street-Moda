@@ -26,6 +26,19 @@ app.use(express.static(reactStaticDir));
 app.use(express.static(uploadsStaticDir));
 app.use(express.json());
 
+app.get('/api/listings', async (req, res, next) => {
+  try {
+    const sql = `
+      select "images" from "listings"
+      order by "listingId" desc
+    `;
+    const result = await db.query(sql);
+    res.status(201).json(result.rows);
+  } catch (error) {
+    next(error);
+  }
+});
+
 app.post('/api/auth/sign-up', async (req, res, next) => {
   try {
     const { username, password, email } = req.body;
@@ -91,43 +104,33 @@ app.get('/api/user', async (req, res, next) => {
   }
 });
 
-// app.get('/api/user', async (req, res, next) => {
-//   try {
-//     const sql = `
-//     select * from "user"
-//     where "userId" = $1
-//     `;
-//     const params = [req.user.userId]
-//     const result = await db.query(sql, params);
-//     res.status(201).json(result.rows);
-//   } catch (error) {
-//     next(error);
-//   }
-// });
-
-app.get('/api/listings/:listingId', async (req, res, next) => {
-  try {
-    const listingId = Number(req.params.listingId);
-    const sql = `
+app.get(
+  '/api/listings/:listingId',
+  authorizationMiddleware,
+  async (req, res, next) => {
+    try {
+      const listingId = Number(req.params.listingId);
+      const sql = `
       select * from "listings" where "listingId" = $1;
     `;
-    const result = await db.query(sql, [listingId]);
+      const result = await db.query(sql, [listingId]);
 
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: 'Listing not found' });
+      if (result.rows.length === 0) {
+        return res.status(404).json({ error: 'Listing not found' });
+      }
+
+      res.status(200).json(result.rows[0]);
+    } catch (error) {
+      next(error);
     }
-
-    res.status(200).json(result.rows[0]);
-  } catch (error) {
-    next(error);
   }
-});
+);
 
 app.get('/api/apparels', async (req, res, next) => {
   try {
     const sql = `
       select * from "listings"
-      where "category" = 'apparels'
+      where "category" = 'Apparels'
       order by "listingId" desc
     `;
     const result = await db.query(sql);
@@ -141,7 +144,7 @@ app.get('/api/shoes', async (req, res, next) => {
   try {
     const sql = `
       select * from "listings"
-      where "category" = 'shoes'
+      where "category" = 'Shoes'
       order by "listingId" desc
     `;
     const result = await db.query(sql);
@@ -161,7 +164,7 @@ app.get('/api/shoes/:listingId', async (req, res, next) => {
     const sql = `
       select *
              from "listings"
-      where "listingId" = $1 and "category" = 'shoes'
+      where "listingId" = $1 and "category" = 'Shoes'
     `;
     const params = [listId];
     const result = await db.query(sql, params);
@@ -187,7 +190,7 @@ app.get('/api/apparels/:listingId', async (req, res, next) => {
     const sql = `
       select *
              from "listings"
-      where "listingId" = $1 and "category" = 'apparels'
+      where "listingId" = $1 and "category" = 'Apparels'
     `;
     const params = [listId];
     const result = await db.query(sql, params);
@@ -213,45 +216,38 @@ app.get(
         throw new ClientError(400, 'userId must be a positive integer');
       }
 
-      const sql = `
+      const userSql = `
+      select * from "user"
+      where "userId" = $1
+    `;
+      const listingsSql = `
       select *
       from "listings"
       where "userId" = $1
+      order by "listingId" desc
     `;
-      const params = [userId];
-      const result = await db.query(sql, params);
-      if (!result.rows) {
-        throw new ClientError(404, `cannot find product with userId ${userId}`);
+
+      const userParams = [userId];
+      const listingsParams = [userId];
+
+      const userResult = await db.query(userSql, userParams);
+      const listingsResult = await db.query(listingsSql, listingsParams);
+
+      if (!userResult.rows[0]) {
+        throw new ClientError(404, `Cannot find user with userId ${userId}`);
       }
-      res.status(201).json(result.rows);
+
+      const combinedData = {
+        user: userResult.rows[0],
+        listings: listingsResult.rows,
+      };
+
+      res.status(200).json(combinedData);
     } catch (error) {
       next(error);
     }
   }
 );
-
-// app.get('/api/sell/:userId', authorizationMiddleware, async (req, res, next) => {
-//   try {
-//     const userId = Number(req.params.userId);
-//     if (!userId) {
-//       throw new ClientError(400, 'userId must be a positive integer');
-//     }
-
-//     const sql = `
-//       select *
-//       from "listings" order by "lastUpdated" asec;
-//       where "userId" = $1
-//     `;
-//     const params = [userId];
-//     const result = await db.query(sql, params);
-//     if (!result.rows) {
-//       throw new ClientError(404, `cannot find product with userId ${userId}`);
-//     }
-//     res.status(201).json(result.rows);
-//   } catch (error) {
-//     next(error);
-//   }
-// });
 
 app.post(
   '/api/sell/new-listing',
@@ -284,7 +280,7 @@ app.post(
       const url = `/images/${req.file.filename}`;
       const sql = `
       insert into "listings" ("userId", "category", "brand", "name", "description", "price", "size", "condition", "images", "contact")
-      values ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+      values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
       returning *;
     `;
       const params = [
@@ -347,7 +343,7 @@ app.put(
             "price" = $5,
             "size" = $6,
             "condition" = $7,
-            "images" = $8
+            "images" = $8,
             "contact" = $11
       where "listingId" = $9 and "userId" = $10
       returning *;
