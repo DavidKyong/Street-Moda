@@ -1,21 +1,22 @@
+import React, { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { readUserListings, removeListing } from '../data';
-import { useState, useEffect } from 'react';
+import SelectionHeader from '../components/SelectionHeader';
 
 export default function Sell() {
-  const { userId } = useParams();
-  const [listings, setListings] = useState([]);
+  const { userId, listingId } = useParams();
+  const [userData, setUserData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [selectedListingId, setSelectedListingId] = useState(null);
 
   useEffect(() => {
-    async function load(userId) {
+    async function loadData(userId) {
       setIsLoading(true);
       try {
-        const userData = await readUserListings(userId);
-        setListings(userData);
+        const combinedData = await readUserListings(userId);
+        setUserData(combinedData);
       } catch (error) {
         setError(error);
       } finally {
@@ -23,7 +24,7 @@ export default function Sell() {
       }
     }
     setIsLoading(true);
-    load(userId);
+    loadData(userId);
   }, [userId]);
 
   function handleModalClose() {
@@ -40,9 +41,12 @@ export default function Sell() {
     try {
       if (selectedListingId) {
         await removeListing(selectedListingId);
-        setListings((prevListing) =>
-          prevListing.filter((item) => item.listingId !== selectedListingId)
-        );
+        setUserData((prevData) => ({
+          ...prevData,
+          listings: prevData.listings.filter(
+            (item) => item.listingId !== selectedListingId
+          ),
+        }));
         handleModalClose();
       }
     } catch (error) {
@@ -58,15 +62,18 @@ export default function Sell() {
       </div>
     );
   }
-  if (!listings) return null;
+  if (!userData) return null;
+
+  const { user, listings } = userData;
 
   return (
     <div>
-      <div className="ml-10">
-        <h1>Username</h1>
-        <h3>Joined in ...</h3>
+      <SelectionHeader />
+      <div className="ml-10 mt-5">
+        <h1 className="text-4xl font-bold">{user.username}</h1>
+        <h3 className="font-semibold">Joined {user.createdAt}</h3>
         <div className="ml-10 mt-10 text-2xl">
-          <h2>For Sale</h2>
+          <h2 className="font-bold">For Sale</h2>
         </div>
         <div className="flex justify-end mr-10">
           <Link
@@ -86,7 +93,7 @@ export default function Sell() {
               />
             ))
           ) : (
-            <div>
+            <div className="flex justify-center mt-5">
               <p>You have no items for sale</p>
             </div>
           )}
@@ -96,9 +103,17 @@ export default function Sell() {
         <div className="modal fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
           <div className="modal-content bg-white p-20 rounded-lg shadow-md">
             <p>Are you sure you want to delete this listing?</p>
-            <div className="modal-buttons">
-              <button onClick={handleModalClose}>No</button>
-              <button onClick={handleDelete}>Yes</button>
+            <div className="modal-buttons flex justify-evenly">
+              <button
+                className="border-2 border-black rounded-xl py-1 px-2"
+                onClick={handleModalClose}>
+                No
+              </button>
+              <button
+                className="border-2 border-black rounded-xl py-1 px-2"
+                onClick={handleDelete}>
+                Yes
+              </button>
             </div>
           </div>
         </div>
@@ -108,7 +123,7 @@ export default function Sell() {
 }
 
 function ListItem({ listing, handleDelete, userId }) {
-  const { listingId, name, price, images } = listing;
+  const { name, price, images } = listing;
   return (
     <div className="flex m-10">
       <img

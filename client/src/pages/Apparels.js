@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { readApparelListing } from '../data';
 import { Link } from 'react-router-dom';
+import SelectionHeader from '../components/SelectionHeader';
 
 export default function Apparels() {
   const [apparels, setApparels] = useState([]);
@@ -27,22 +28,26 @@ export default function Apparels() {
   if (!apparels) return null;
 
   return (
-    <div className="listing-page mt-7">
-      <img
-        src="/images/apparels.png"
-        alt="placeholder"
-        className="w-full mb-10"></img>
-      <h2 className="ml-10 text-4xl mb-5">Apparels</h2>
-      <ul className="grid grid-cols-5 gap-10 mr-10 ml-10">
-        {apparels.length > 0 ? (
-          apparels.map((apparel) => (
-            <ListItem key={apparel.listingId} listing={apparel} />
-          ))
-        ) : (
-          <li className="flex justify-center">No products</li>
-        )}
-      </ul>
-    </div>
+    <>
+      <SelectionHeader />
+      <div className="listing-page mt-7">
+        <img
+          src="/images/apparels.png"
+          alt="placeholder"
+          className="w-full h-40 object-cover mb-2 h-252"
+        />
+        <h2 className="ml-10 text-4xl mb-5">Apparels</h2>
+        <ul className="grid grid-cols-5 gap-10 mr-10 ml-10">
+          {apparels.length > 0 ? (
+            apparels.map((apparel) => (
+              <ListItem key={apparel.listingId} listing={apparel} />
+            ))
+          ) : (
+            <li className="flex justify-center">No products</li>
+          )}
+        </ul>
+      </div>
+    </>
   );
 }
 
@@ -50,12 +55,12 @@ function ListItem({ listing }) {
   const { listingId, name, price, size, images, brand } = listing;
   return (
     <li>
-      <div className="card-container">
+      <div className="card-container mb-5">
         <Link to={`/apparels/${listingId}`}>
           <img
             src={`${images}`}
             alt="placeholder"
-            className="w-full h-40 object-cover mb-2"
+            className="w-full h-40 mb-2"
           />
         </Link>
         <div className="h-0.5 bg-gray-300 my-2"></div>

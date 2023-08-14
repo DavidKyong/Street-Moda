@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Category from './pages/Category';
 import Shoes from './pages/Shoes';
@@ -16,8 +16,19 @@ import './App.css';
 
 export default function App() {
   const [isSignedIn, setIsSignedIn] = useState(false);
-  const [userId, setUserId] = useState(localStorage.getItem('userId'));
-  const [token, setToken] = useState(localStorage.getItem('token'));
+  const [userId, setUserId] = useState(null);
+  const [token, setToken] = useState(null);
+
+  useEffect(() => {
+    const storedUserId = localStorage.getItem('userId');
+    const storedToken = localStorage.getItem('token');
+
+    if (storedUserId && storedToken) {
+      setIsSignedIn(true);
+      setUserId(storedUserId);
+      setToken(storedToken);
+    }
+  }, []);
 
   function handleSignIn(userId) {
     setIsSignedIn(true);

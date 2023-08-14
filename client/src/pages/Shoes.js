@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { readShoeListing } from '../data';
 import { Link } from 'react-router-dom';
 import './shoes.css';
+import SelectionHeader from '../components/SelectionHeader';
 
 export default function Shoes() {
   const [shoes, setShoes] = useState([]);
@@ -29,22 +30,28 @@ export default function Shoes() {
   if (!shoes) return null;
 
   return (
-    <div className="listing-page mt-7">
-      <div>
-        <img
-          src="/images/shoes.png"
-          alt="placeholder"
-          className="w-full mb-10"></img>
+    <>
+      <SelectionHeader />
+      <div className="listing-page mt-3">
+        <div>
+          <img
+            src="/images/shoes.png"
+            alt="placeholder"
+            className="w-full h-40 object-cover mb-2 h-252"
+          />
+        </div>
+        <h2 className="ml-10 text-4xl mb-5">Shoes</h2>
+        <ul className="grid grid-cols-5 gap-10 mr-10 ml-10">
+          {shoes.length > 0 ? (
+            shoes.map((shoe) => (
+              <ListItem key={shoe.listingId} listing={shoe} />
+            ))
+          ) : (
+            <li className="flex justify-center">No products</li>
+          )}
+        </ul>
       </div>
-      <h2 className="ml-10 text-4xl mb-5">Shoes</h2>
-      <ul className="grid grid-cols-5 gap-10 mr-10 ml-10">
-        {shoes.length > 0 ? (
-          shoes.map((shoe) => <ListItem key={shoe.listingId} listing={shoe} />)
-        ) : (
-          <li className="flex justify-center">No products</li>
-        )}
-      </ul>
-    </div>
+    </>
   );
 }
 
@@ -52,12 +59,12 @@ function ListItem({ listing }) {
   const { listingId, name, price, size, images, brand } = listing;
   return (
     <li>
-      <div className="card-container">
+      <div className="card-container mb-5">
         <Link to={`/shoes/${listingId}`}>
           <img
             src={`${images}`}
             alt="placeholder"
-            className="w-full h-40 object-cover mb-2"
+            className="w-full h-40 object mb-2"
           />
         </Link>
         <div className="h-0.5 bg-gray-300 my-2"></div>
@@ -67,7 +74,7 @@ function ListItem({ listing }) {
         </div>
         <div>
           <p className="mb-2 shoe-name text-xs">{name}</p>
-          <p>${price}</p>
+          <p className="">${price}</p>
         </div>
       </div>
     </li>
