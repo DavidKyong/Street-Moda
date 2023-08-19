@@ -27,7 +27,10 @@ CREATE TABLE "public"."listings" (
 	"price" integer not null,
 	"size" TEXT not null,
 	"condition" TEXT not null,
-	"images" TEXT not null,
+	"imageOne" TEXT not null,
+  "imageTwo" text not null,
+  "imageThree" text not null,
+  "imageFour" text not null,
 	"contact" TEXT not null,
 	"lastUpdated" timestamptz(6) NOT NULL default now(),
 	CONSTRAINT "listings_pk" PRIMARY KEY ("listingId")

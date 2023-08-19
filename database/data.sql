@@ -9,5 +9,5 @@
      ('admin', 12345, 'idk@gmail.com');
 
 insert into "listings"
-  ("userId", "category", "brand", "name", "description", "price", "size", "condition", "images", "contact")
-  values (1 ,'shoes', 'Nike', 'Panda Dunks', 'Black and white dunk lows', 100, '10', 'New', 'idk', 'idk');
+  ("userId", "category", "brand", "name", "description", "price", "size", "condition", "imageOne", "imageTwo", "imageThree", "imageFour", "contact")
+  values (1 ,'shoes', 'Nike', 'Panda Dunks', 'Black and white dunk lows', 100, '10', 'New', 'idk', 'idk', 'idk', 'idk', 'idk');

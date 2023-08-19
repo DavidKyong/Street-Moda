@@ -29,7 +29,7 @@ app.use(express.json());
 app.get('/api/listings', async (req, res, next) => {
   try {
     const sql = `
-      select "images" from "listings"
+      select "imageOne" from "listings"
       order by "listingId" desc
     `;
     const result = await db.query(sql);
@@ -277,10 +277,13 @@ app.post(
       ) {
         throw new ClientError(400, 'input fields are required');
       }
-      const url = `/images/${req.file.filename}`;
+      const urlOne = `/images/${req.file.filename}`;
+      const urlTwo = `/images/${req.file.filename}`;
+      const urlThree = `/images/${req.file.filename}`;
+      const urlFour = `/images/${req.file.filename}`;
       const sql = `
-      insert into "listings" ("userId", "category", "brand", "name", "description", "price", "size", "condition", "images", "contact")
-      values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+      insert into "listings" ("userId", "category", "brand", "name", "description", "price", "size", "condition", "imageOne", "imageTwo", "imageThree", "imageFour", "contact")
+      values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
       returning *;
     `;
       const params = [
@@ -292,7 +295,10 @@ app.post(
         price,
         size,
         condition,
-        url,
+        urlOne,
+        urlTwo,
+        urlThree,
+        urlFour,
         contact,
       ];
       const result = await db.query(sql, params);
