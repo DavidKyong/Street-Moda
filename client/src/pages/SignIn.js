@@ -5,6 +5,7 @@ import SelectionHeader from '../components/SelectionHeader';
 
 export default function SignIn() {
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState();
   const { handleSignIn } = useContext(AppContext);
 
   async function handleSubmit(event) {

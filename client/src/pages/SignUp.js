@@ -5,6 +5,7 @@ import SelectionHeader from '../components/SelectionHeader';
 
 export default function SignUp() {
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState();
 
   async function handleSubmit(event) {
     event.preventDefault();

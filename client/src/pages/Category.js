@@ -7,6 +7,7 @@ export default function Category() {
   const [gifIndex, setGifIndex] = useState(0);
   const [randomImage, setRandomImage] = useState();
   const [error, setError] = useState();
+  const [isLoading, setIsLoading] = useState();
   const gifs = [
     '/images/gif2.gif',
     '/images/gif3.gif',
@@ -16,21 +17,31 @@ export default function Category() {
   ];
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setGifIndex((prevIndex) => (prevIndex + 1) % gifs.length);
-    }, 3500);
-
     async function load() {
       try {
+        setIsLoading(true);
         const random = await readListings();
         setRandomImage(random);
       } catch (error) {
         setError(error);
+      } finally {
+        setIsLoading(false);
       }
     }
+    const interval = setInterval(() => {
+      setGifIndex((prevIndex) => (prevIndex + 1) % gifs.length);
+    }, 3500);
+
+    setIsLoading(true);
     load();
     return () => clearInterval(interval);
   }, [gifs.length]);
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) {
+    return <div>Error Loading {error.message}</div>;
+  }
+  if (!gifIndex) return null;
 
   return (
     <>

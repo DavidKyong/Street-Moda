@@ -7,6 +7,26 @@ export default function NewList() {
   const [isLoading, setIsLoading] = useState(false);
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [error, setError] = useState();
+  const [firstImage, setFirstImage] = useState();
+  const [secondImage, setSecondImage] = useState();
+  const [thirdImage, setThirdImage] = useState();
+  const [fourthImage, setFourthImage] = useState();
+
+  function handleFirstChange(event) {
+    setFirstImage(URL.createObjectURL(event.target.files[0]));
+  }
+
+  function handleSecondChange(event) {
+    setSecondImage(URL.createObjectURL(event.target.files[0]));
+  }
+
+  function handleThirdChange(event) {
+    setThirdImage(URL.createObjectURL(event.target.files[0]));
+  }
+
+  function handleFourthChange(event) {
+    setFourthImage(URL.createObjectURL(event.target.files[0]));
+  }
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -30,14 +50,11 @@ export default function NewList() {
       },
       body: formData,
     };
-
     try {
       const response = await fetch('/api/sell/new-listing', req);
-
       if (!response.ok) {
         throw new Error(`Fetch Error ${response.status}`);
       }
-
       const responseBody = await response.json();
       return responseBody;
     } catch (error) {
@@ -132,14 +149,199 @@ export default function NewList() {
                 required
                 cols="81"
                 rows="7"></textarea>
-              <p className="text-xl mb-4 font-semibold">Photo</p>
-              <input
-                type="file"
-                name="image"
-                accept=".png, .jpg, .jpeg, .gif"
-                className="border-2 border-gray-200 mb-4"
-                required
-              />
+            </div>
+            <div className="mb-8 ml-10 mr-10">
+              <p className="text-xl mb-4 font-semibold">Photos</p>
+              <div class="flex justify-center">
+                <div className="w-2/5">
+                  <label
+                    htmlFor="dropzone-file-1"
+                    className="flex items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer">
+                    {!firstImage ? (
+                      <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                        <svg
+                          className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
+                          aria-hidden="true"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 20 16">
+                          <path
+                            stroke="currentColor"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                          />
+                        </svg>
+                        <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                          <span className="font-semibold">Click to upload</span>{' '}
+                          or drag and drop
+                        </p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                          SVG, PNG, JPG or GIF (MAX. 800x400px)
+                        </p>
+                        <input
+                          id="dropzone-file-1"
+                          type="file"
+                          className="hidden"
+                          onChange={handleFirstChange}
+                        />
+                      </div>
+                    ) : (
+                      <div>
+                        <input
+                          id="dropzone-file-1"
+                          type="file"
+                          className="hidden"
+                          onChange={handleFirstChange}
+                        />
+                        <img src={firstImage} alt="First" className="bg-none" />
+                      </div>
+                    )}
+                  </label>
+                </div>
+                <div className="w-1/5">
+                  <label
+                    htmlFor="dropzone-file-2"
+                    className="flex items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer">
+                    {!secondImage ? (
+                      <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                        <svg
+                          className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
+                          aria-hidden="true"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 20 16">
+                          <path
+                            stroke="currentColor"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                          />
+                        </svg>
+                        <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                          <span className="font-semibold">Click to upload</span>{' '}
+                          or drag and drop
+                        </p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                          SVG, PNG, JPG or GIF (MAX. 800x400px)
+                        </p>
+                        <input
+                          id="dropzone-file-2"
+                          type="file"
+                          className="hidden"
+                          onChange={handleSecondChange}
+                        />
+                      </div>
+                    ) : (
+                      <div>
+                        <input
+                          id="dropzone-file-2"
+                          type="file"
+                          className="hidden"
+                          onChange={handleSecondChange}
+                        />
+                        <img src={secondImage} alt="Second" />
+                      </div>
+                    )}
+                  </label>
+                </div>
+                <div className="w-1/5">
+                  <label
+                    htmlFor="dropzone-file-3"
+                    className="flex items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer ">
+                    {!thirdImage ? (
+                      <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                        <svg
+                          className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
+                          aria-hidden="true"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 20 16">
+                          <path
+                            stroke="currentColor"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                          />
+                        </svg>
+                        <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                          <span className="font-semibold">Click to upload</span>{' '}
+                          or drag and drop
+                        </p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                          SVG, PNG, JPG or GIF (MAX. 800x400px)
+                        </p>
+                        <input
+                          id="dropzone-file-3"
+                          type="file"
+                          className="hidden"
+                          onChange={handleThirdChange}
+                        />
+                      </div>
+                    ) : (
+                      <div>
+                        <input
+                          id="dropzone-file-3"
+                          type="file"
+                          className="hidden"
+                          onChange={handleThirdChange}
+                        />
+                        <img src={thirdImage} alt="Third" />
+                      </div>
+                    )}
+                  </label>
+                </div>
+                <div className="w-1/5">
+                  <label
+                    htmlFor="dropzone-file-4"
+                    className="flex items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer">
+                    {!fourthImage ? (
+                      <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                        <svg
+                          className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
+                          aria-hidden="true"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 20 16">
+                          <path
+                            stroke="currentColor"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                          />
+                        </svg>
+                        <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                          <span className="font-semibold">Click to upload</span>{' '}
+                          or drag and drop
+                        </p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                          SVG, PNG, JPG or GIF (MAX. 800x400px)
+                        </p>
+                        <input
+                          id="dropzone-file-4"
+                          type="file"
+                          className="hidden"
+                          onChange={handleFourthChange}
+                        />
+                      </div>
+                    ) : (
+                      <div>
+                        <input
+                          id="dropzone-file-4"
+                          type="file"
+                          className="hidden"
+                          onChange={handleFourthChange}
+                        />
+                        <img src={fourthImage} alt="Fourth" className />
+                      </div>
+                    )}
+                  </label>
+                </div>
+              </div>
             </div>
             <div className="flex justify-end mr-10 items-center mb-3">
               <button

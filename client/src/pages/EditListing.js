@@ -15,11 +15,13 @@ export default function EditListing() {
   const [category, setCategory] = useState('');
   const [contact, setContact] = useState('');
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
+  const [isLoading, setIsLoading] = useState();
   const [error, setError] = useState();
 
   useEffect(() => {
     async function fetchListing() {
       try {
+        setIsLoading(true);
         const fetchedListing = await readListing(listingId);
         setListing(fetchedListing);
         setDescription(fetchedListing.description);
@@ -32,8 +34,11 @@ export default function EditListing() {
         setContact(fetchedListing.contact);
       } catch (error) {
         setError(error);
+      } finally {
+        setIsLoading(false);
       }
     }
+    setIsLoading(true);
     fetchListing();
   }, [listingId]);
 
